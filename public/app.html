@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DYFI Wayanad 2026 — Web Portal</title>
+    <!-- Add font and icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #E53935;
+            --primary-dark: #B71C1C;
+            --primary-glow: rgba(229, 57, 53, 0.35);
+            --bg: #080810;
+            --card: rgba(18, 18, 28, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #FFFFFF;
+            --muted: #8E8EA8;
+            --green: #10B981;
+            --orange: #F59E0B;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(229, 57, 53, 0.15) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(229, 57, 53, 0.05) 0%, transparent 60%);
+            background-attachment: fixed;
+            padding-bottom: 75px; /* space for tab bar */
+        }
+
+        /* Container & Navigation */
+        header {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8, 8, 16, 0.8);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-star {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .header-title h1 {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .header-title p {
+            font-size: 10px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: none;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* App Tabs / Navigation Pages */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Auth forms (Register / Login) */
+        .auth-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px 24px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .auth-header h2 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .auth-header p {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            padding: 14px 16px;
+            border-radius: 14px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(229,57,53,0.15);
+            background: rgba(255,255,255,0.06);
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--primary-glow);
+        }
+
+        .auth-toggle {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .auth-toggle span {
+            color: var(--primary);
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Home Dashboard View */
+        .dash-hero {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .welcome-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(229,57,53,0.15);
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin: 0 auto 12px;
+        }
+
+        .dash-hero h2 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .dash-hero p {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .conf-banner {
+            background: linear-gradient(135deg, rgba(229,57,53,0.1) 0%, rgba(229,57,53,0.02) 100%);
+            border: 1px solid rgba(229,57,53,0.2);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .conf-banner h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #FF6B6B;
+        }
+
+        .conf-banner p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.5;
+        }
+
+        /* Stats & Quick Actions Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .info-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .info-text h4 {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-text p {
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        /* Digital Badge (Ticket Pass) */
+        .badge-container {
+            perspective: 1000px;
+            margin-bottom: 24px;
+        }
+
+        .badge-card {
+            background: linear-gradient(145deg, #180808 0%, #0d0d15 100%);
+            border: 2px solid rgba(229,57,53,0.3);
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(229,57,53,0.15);
+            overflow: hidden;
+        }
+
+        .badge-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(229,57,53,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .badge-header {
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.15);
+            padding-bottom: 16px;
+        }
+
+        .badge-header h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #FF5252;
+            letter-spacing: 1px;
+        }
+
+        .badge-header p {
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        .badge-qr {
+            width: 180px;
+            height: 180px;
+            background: white;
+            border-radius: 16px;
+            padding: 10px;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .badge-qr img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .badge-name {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .badge-details {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 10px;
+        }
+
+        .badge-chip {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 12px;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .badge-footer {
+            margin-top: 20px;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.3);
+        }
+
+        /* Schedule Timeline */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .timeline-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(229,57,53,0.1);
+            border: 1px solid rgba(229,57,53,0.2);
+            padding: 8px 12px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 11px;
+            color: #FF5252;
+            width: 90px;
+            height: 64px;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .timeline-content h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .timeline-content p {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .timeline-meta {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* Notices / Announcements */
+        .notice-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .notice-card.pinned {
+            border-color: rgba(245, 158, 11, 0.4);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(18, 18, 28, 0.7) 100%);
+        }
+
+        .notice-pin {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--orange);
+            background: rgba(245, 158, 11, 0.1);
+            padding: 2px 8px;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+
+        .notice-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            padding-right: 50px;
+        }
+
+        .notice-card p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.5;
+        }
+
+        .notice-time {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 10px;
+            display: block;
+        }
+
+        /* Documents / Gallery Files */
+        .file-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .file-type {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 12px;
+            color: #FF5252;
+            border: 1px solid var(--border);
+        }
+
+        .file-desc h3 {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .file-desc p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .btn-action {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px var(--primary-glow);
+        }
+
+        /* Bottom Tab Bar Navigation */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 18, 0.9);
+            border-top: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+            width: 20%;
+        }
+
+        .tab-item.active {
+            color: var(--primary);
+        }
+
+        .tab-icon {
+            font-size: 20px;
+        }
+
+        /* Notifications & Loaders */
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(229, 57, 53, 0.95);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 700;
+            z-index: 1000;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .loader {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header bar -->
+    <header>
+        <div class="header-logo">
+            <div class="logo-star">★</div>
+            <div class="header-title">
+                <h1>DYFI WAYANAD</h1>
+                <p>16th District Conference</p>
+            </div>
+        </div>
+        <button id="logoutBtn" class="logout-btn" onclick="logout()">LOGOUT</button>
+    </header>
+
+    <!-- Main Content Container -->
+    <main>
+
+        <!-- PAGE 1: Welcome & Authentication -->
+        <section id="authPage" class="page active">
+            <!-- Sign Up Form -->
+            <div id="signUpCard" class="auth-card">
+                <div class="auth-header">
+                    <h2>Delegate Portal</h2>
+                    <p>Register as a delegate for the conference</p>
+                </div>
+                <form id="signUpForm" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="regName">Full Name</label>
+                        <input type="text" id="regName" class="form-control" placeholder="Enter full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Email Address</label>
+                        <input type="email" id="regEmail" class="form-control" placeholder="Enter email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPhone">Phone Number</label>
+                        <input type="tel" id="regPhone" class="form-control" placeholder="Enter 10-digit number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regUnit">DYFI Block/Unit</label>
+                        <input type="text" id="regUnit" class="form-control" placeholder="Enter block/unit name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regFood">Food Preference</label>
+                        <select id="regFood" class="form-control" required>
+                            <option value="">Select Food Option</option>
+                            <option value="Non-Vegetarian">Non-Vegetarian</option>
+                            <option value="Vegetarian">Vegetarian</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="regSize">T-Shirt Size</label>
+                        <select id="regSize" class="form-control" required>
+                            <option value="">Select T-Shirt Size</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit" id="regSubmitBtn">REGISTER</button>
+                </form>
+                <div class="auth-toggle">
+                    Already registered? <span onclick="toggleAuth(true)">Find your pass</span>
+                </div>
+            </div>
+
+            <!-- Login / Find Ticket Form -->
+            <div id="loginCard" class="auth-card" style="display: none;">
+                <div class="auth-header">
+                    <h2>Retrieve Pass</h2>
+                    <p>Enter your phone number or email address</p>
+                </div>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginVal">Phone or Email</label>
+                        <input type="text" id="loginVal" class="form-control" placeholder="Enter phone/email" required>
+                    </div>
+                    <button type="submit" class="btn-submit" id="loginSubmitBtn">GET TICKET</button>
+                </form>
+                <div class="auth-toggle">
+                    New delegate? <span onclick="toggleAuth(false)">Register here</span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- PAGE 2: Dashboard -->
+        <section id="dashPage" class="page">
+            <div class="dash-hero">
+                <div class="welcome-avatar">👤</div>
+                <h2 id="welcomeName">Welcome Comrade</h2>
+                <p id="welcomeUnit">DYFI Block/Unit</p>
+            </div>
+
+            <div class="conf-banner">
+                <h3>16th District Committee Conference</h3>
+                <p>Date: August 15 - 16, 2026<br>Venue: Metropolitan Convention Center, Grand Hall A & B</p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">📅</div>
+                    <div class="info-text">
+                        <h4>Status</h4>
+                        <p>Registered</p>
+                    </div>
+                </div>
+                <div class="info-card" onclick="switchPage('ticket')">
+                    <div class="info-icon">🎫</div>
+                    <div class="info-text">
+                        <h4>Delegate Pass</h4>
+                        <p>View Pass</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- PAGE 3: Ticket (QR Code) -->
+        <section id="ticketPage" class="page">
+            <div class="badge-container">
+                <div class="badge-card">
+                    <div class="badge-header">
+                        <h3>DELEGATE PASS</h3>
+                        <p>DYFI WAYANAD DISTRICT CONFERENCE 2026</p>
+                    </div>
+                    
+                    <div class="badge-qr">
+                        <img id="badgeQrImg" src="" alt="QR Pass">
+                    </div>
+
+                    <h2 class="badge-name" id="badgeName">Comrade Name</h2>
+                    
+                    <div class="badge-details">
+                        <div class="badge-chip" id="badgeUnit">Unit Name</div>
+                        <div class="badge-chip" id="badgeTShirt">Size: M</div>
+                    </div>
+
+                    <div class="badge-footer">
+                        ★ INQUILAB ZINDABAD ★
+                    </div>
+                </div>
+            </div>
+            <button onclick="window.print()" class="btn-submit">PRINT PASS</button>
+        </section>
+
+
+        <!-- PAGE 4: Schedule Timeline -->
+        <section id="schedulePage" class="page">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px;">Event Timeline</h2>
+            <div class="timeline" id="timelineList">
+                <p class="notice-time">Loading timeline schedule...</p>
+            </div>
+        </section>
+
+
+        <!-- PAGE 5: Announcements -->
+        <section id="noticesPage" class="page">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px;">Notice Board</h2>
+            <div id="noticesList">
+                <p class="notice-time">Loading announcements...</p>
+            </div>
+        </section>
+
+
+        <!-- PAGE 6: Downloads & Souvenirs -->
+        <section id="filesPage" class="page">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px;">Resources</h2>
+            
+            <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--muted); text-transform: uppercase;">Official Documents</h3>
+            <div id="documentsList">
+                <p class="notice-time">Loading documents...</p>
+            </div>
+
+            <h3 style="font-size: 14px; font-weight: 700; margin-top: 24px; margin-bottom: 12px; color: var(--muted); text-transform: uppercase;">Photo Gallery Albums</h3>
+            <div id="albumsList">
+                <p class="notice-time">Loading photo albums...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Tab bar -->
+    <div class="tab-bar" id="tabBar" style="display: none;">
+        <button class="tab-item active" onclick="switchPage('dash', this)">
+            <span class="tab-icon">🏠</span>
+            <span>Home</span>
+        </button>
+        <button class="tab-item" onclick="switchPage('ticket', this)">
+            <span class="tab-icon">🎫</span>
+            <span>Ticket</span>
+        </button>
+        <button class="tab-item" onclick="switchPage('schedule', this)">
+            <span class="tab-icon">📅</span>
+            <span>Timeline</span>
+        </button>
+        <button class="tab-item" onclick="switchPage('notices', this)">
+            <span class="tab-icon">📢</span>
+            <span>Alerts</span>
+        </button>
+        <button class="tab-item" onclick="switchPage('files', this)">
+            <span class="tab-icon">📁</span>
+            <span>Files</span>
+        </button>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Notice message here</div>
+
+    <!-- Client-side Logic Script -->
+    <script>
+        const API_BASE = "https://dyfiwayanad2026-backend.onrender.com/api";
+
+        // Navigation Controller
+        function switchPage(pageName, tabEl) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Show requested page
+            document.getElementById(pageName + 'Page').classList.add('active');
+
+            if (tabEl) {
+                // Update active tab styling
+                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                tabEl.classList.add('active');
+            }
+
+            // Lazy load page-specific API data
+            if (pageName === 'schedule') loadSchedule();
+            if (pageName === 'notices') loadAnnouncements();
+            if (pageName === 'files') loadResources();
+        }
+
+        // Toggle Sign Up / Retrieve Ticket forms
+        function toggleAuth(showLogin) {
+            document.getElementById('signUpCard').style.display = showLogin ? 'none' : 'block';
+            document.getElementById('loginCard').style.display = showLogin ? 'block' : 'none';
+        }
+
+        // Toast helper
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.style.background = isError ? 'rgba(229, 57, 53, 0.95)' : 'rgba(16, 185, 129, 0.95)';
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Handle Registration
+        async function handleRegister(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('regSubmitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="loader"></span>`;
+
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value;
+            const unit = document.getElementById('regUnit').value;
+            const food = document.getElementById('regFood').value;
+            const size = document.getElementById('regSize').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        phone,
+                        questionnaire: { unit, foodPreference: food, tShirtSize: size }
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Registration failed");
+
+                saveSession(data.token, data.participant);
+                showToast("Registration Successful!");
+                initPortal();
+            } catch (err) {
+                showToast(err.message, true);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
+
+        // Handle Login / Lookup Phone
+        async function handleLogin(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('loginSubmitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="loader"></span>`;
+
+            const loginValue = document.getElementById('loginVal').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/participant/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ loginValue })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Sign in failed");
+
+                saveSession(data.token, data.participant);
+                showToast("Ticket Retrieved!");
+                initPortal();
+            } catch (err) {
+                showToast(err.message, true);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
+
+        // Session helpers
+        function saveSession(token, participant) {
+            localStorage.setItem('token', token);
+            localStorage.setItem('participant', JSON.stringify(participant));
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('participant');
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('tabBar').style.display = 'none';
+            document.getElementById('authPage').classList.add('active');
+            document.getElementById('dashPage').classList.remove('active');
+            document.getElementById('ticketPage').classList.remove('active');
+            document.getElementById('schedulePage').classList.remove('active');
+            document.getElementById('noticesPage').classList.remove('active');
+            document.getElementById('filesPage').classList.remove('active');
+        }
+
+        // Load schedule items
+        async function loadSchedule() {
+            const list = document.getElementById('timelineList');
+            try {
+                const res = await fetch(`${API_BASE}/schedule`);
+                const data = await res.json();
+                
+                const agenda = data.schedule || data;
+                if (!agenda || agenda.length === 0) {
+                    list.innerHTML = `<p class="notice-time">No events listed in the schedule.</p>`;
+                    return;
+                }
+
+                list.innerHTML = agenda.map(item => `
+                    <div class="timeline-item">
+                        <div class="time-box">
+                            <div>Day ${item.day}</div>
+                            <div style="font-size: 9px; font-weight: normal; margin-top: 2px;">${item.time.split(' - ')[0]}</div>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>${item.activity}</h3>
+                            <p>${item.speaker || 'Event Panel'}</p>
+                            <div class="timeline-meta">
+                                <span>📍 ${item.venue}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                list.innerHTML = `<p class="notice-time">Failed to load schedule timeline.</p>`;
+            }
+        }
+
+        // Load notice announcements
+        async function loadAnnouncements() {
+            const list = document.getElementById('noticesList');
+            try {
+                const res = await fetch(`${API_BASE}/announcements`);
+                const data = await res.json();
+                
+                const notices = data.announcements || data;
+                if (!notices || notices.length === 0) {
+                    list.innerHTML = `<p class="notice-time">No announcements posted yet.</p>`;
+                    return;
+                }
+
+                list.innerHTML = notices.map(n => `
+                    <div class="notice-card ${n.isPinned ? 'pinned' : ''}">
+                        ${n.isPinned ? '<span class="notice-pin">Pinned</span>' : ''}
+                        <h3>${n.title}</h3>
+                        <p>${n.content}</p>
+                        <span class="notice-time">📅 ${new Date(n.date).toLocaleString()}</span>
+                    </div>
+                `).join('');
+            } catch (e) {
+                list.innerHTML = `<p class="notice-time">Failed to load notices.</p>`;
+            }
+        }
+
+        // Load document downloads and gallery links
+        async function loadResources() {
+            const docList = document.getElementById('documentsList');
+            const albumList = document.getElementById('albumsList');
+
+            // 1. Load documents
+            try {
+                const res = await fetch(`${API_BASE}/documents`);
+                const docs = await res.json();
+                if (!docs || docs.length === 0) {
+                    docList.innerHTML = `<p class="notice-time">No document files available.</p>`;
+                } else {
+                    docList.innerHTML = docs.map(d => `
+                        <div class="file-card">
+                            <div class="file-info">
+                                <div class="file-type">${d.fileType || 'PDF'}</div>
+                                <div class="file-desc">
+                                    <h3>${d.title}</h3>
+                                    <p>${d.description || 'Downloadable file'}</p>
+                                </div>
+                            </div>
+                            <button onclick="window.open('${d.fileUrl}')" class="btn-action">⬇</button>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                docList.innerHTML = `<p class="notice-time">Failed to load documents.</p>`;
+            }
+
+            // 2. Load Gallery Drive albums
+            try {
+                const res = await fetch(`${API_BASE}/gallery`);
+                const albums = await res.json();
+                if (!albums || albums.length === 0) {
+                    albumList.innerHTML = `<p class="notice-time">No photo albums added yet.</p>`;
+                } else {
+                    albumList.innerHTML = albums.map(a => `
+                        <div class="file-card">
+                            <div class="file-info">
+                                <div class="file-type">🖼️</div>
+                                <div class="file-desc">
+                                    <h3>${a.title}</h3>
+                                    <p>Google Drive Shared Album</p>
+                                </div>
+                            </div>
+                            <button onclick="window.open('${a.driveFolderUrl}')" class="btn-action">↗</button>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                albumList.innerHTML = `<p class="notice-time">Failed to load gallery albums.</p>`;
+            }
+        }
+
+        // Initialize portal on startup or registration success
+        function initPortal() {
+            const token = localStorage.getItem('token');
+            const partStr = localStorage.getItem('participant');
+
+            if (token && partStr) {
+                const part = JSON.parse(partStr);
+                
+                // Set text bindings
+                document.getElementById('welcomeName').innerText = `Welcome, Comrade ${part.name}`;
+                document.getElementById('welcomeUnit').innerText = `Unit: ${part.questionnaire?.unit || 'DYFI'}`;
+                
+                document.getElementById('badgeName').innerText = part.name;
+                document.getElementById('badgeUnit').innerText = part.questionnaire?.unit || 'DYFI';
+                document.getElementById('badgeTShirt').innerText = `T-Shirt: ${part.questionnaire?.tShirtSize || 'M'}`;
+                document.getElementById('badgeQrImg').src = part.qrCode;
+
+                // Adjust navigation display
+                document.getElementById('logoutBtn').style.display = 'block';
+                document.getElementById('tabBar').style.display = 'flex';
+                
+                // Show dashboard page
+                document.getElementById('authPage').classList.remove('active');
+                document.getElementById('dashPage').classList.add('active');
+            } else {
+                logout();
+            }
+        }
+
+        // Start App check
+        window.addEventListener('DOMContentLoaded', initPortal);
+    </script>
+</body>
+</html>
