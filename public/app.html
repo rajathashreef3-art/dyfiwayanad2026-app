@@ -1125,29 +1125,50 @@
         }
 
         // Initialize portal on startup or registration success
-        function initPortal() {
+        async function initPortal() {
             const token = localStorage.getItem('token');
             const partStr = localStorage.getItem('participant');
 
             if (token && partStr) {
-                const part = JSON.parse(partStr);
-                
-                // Set text bindings
-                document.getElementById('welcomeName').innerText = `Welcome, Comrade ${part.name}`;
-                document.getElementById('welcomeUnit').innerText = `Unit: ${part.questionnaire?.unit || 'DYFI'}`;
-                
-                document.getElementById('badgeName').innerText = part.name;
-                document.getElementById('badgeUnit').innerText = part.questionnaire?.unit || 'DYFI';
-                document.getElementById('badgeTShirt').innerText = `T-Shirt: ${part.questionnaire?.tShirtSize || 'M'}`;
-                document.getElementById('badgeQrImg').src = part.qrCode;
+                try {
+                    const part = JSON.parse(partStr);
+                    
+                    // Live check against the Firebase DB to verify the delegate exists
+                    const res = await fetch(`${API_BASE}/participant/${part.id}`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
 
-                // Adjust navigation display
-                document.getElementById('logoutBtn').style.display = 'block';
-                document.getElementById('tabBar').style.display = 'flex';
-                
-                // Show dashboard page
-                document.getElementById('authPage').classList.remove('active');
-                document.getElementById('dashPage').classList.add('active');
+                    if (!res.ok) {
+                        throw new Error("Delegate not verified in database.");
+                    }
+
+                    const verifiedData = await res.json();
+                    const verifiedPart = verifiedData.participant;
+
+                    // Set text bindings from verified database data
+                    document.getElementById('welcomeName').innerText = `Welcome, Comrade ${verifiedPart.name}`;
+                    document.getElementById('welcomeUnit').innerText = `Unit: ${verifiedPart.questionnaire?.unit || 'DYFI'}`;
+                    
+                    document.getElementById('badgeName').innerText = verifiedPart.name;
+                    document.getElementById('badgeUnit').innerText = verifiedPart.questionnaire?.unit || 'DYFI';
+                    document.getElementById('badgeTShirt').innerText = `T-Shirt: ${verifiedPart.questionnaire?.tShirtSize || 'M'}`;
+                    document.getElementById('badgeQrImg').src = verifiedPart.qrCode;
+
+                    // Save verified data to cache
+                    localStorage.setItem('participant', JSON.stringify(verifiedPart));
+
+                    // Adjust navigation display
+                    document.getElementById('logoutBtn').style.display = 'block';
+                    document.getElementById('tabBar').style.display = 'flex';
+                    
+                    // Show dashboard page
+                    document.getElementById('authPage').classList.remove('active');
+                    document.getElementById('dashPage').classList.add('active');
+                } catch (err) {
+                    console.error("Verification failed:", err);
+                    logout();
+                    showToast("Session expired or registration not verified.", true);
+                }
             } else {
                 logout();
             }
