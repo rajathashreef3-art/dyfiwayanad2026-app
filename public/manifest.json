@@ -1,0 +1,16 @@
+{
+  "short_name": "DYFI 2026",
+  "name": "DYFI Wayanad Conference 2026",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/color/512/star.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/app.html",
+  "background_color": "#080810",
+  "theme_color": "#E53935",
+  "display": "standalone",
+  "orientation": "portrait"
+}
