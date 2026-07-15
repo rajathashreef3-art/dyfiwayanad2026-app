@@ -853,43 +853,40 @@
 
                     <div class="form-section">Organisation</div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="regYearJoined">ഡി.വൈ.എഫ്.ഐ.യിൽ ചേർന്ന വർഷം / Year joined DYFI</label>
-                            <input type="number" id="regYearJoined" class="form-control" min="1970" max="2026" placeholder="YYYY" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="regTimesAttended">ജില്ലാ സമ്മേളനം / Times attended</label>
-                            <input type="number" id="regTimesAttended" class="form-control" min="0" max="50" placeholder="0" value="0">
-                        </div>
+                    <div class="form-group">
+                        <label for="regYearJoined">ഡി.വൈ.എഫ്.ഐ.യിൽ ചേർന്ന വർഷം / Year Joined DYFI</label>
+                        <select id="regYearJoined" class="form-control" required>
+                            <option value="">Select Year</option>
+                            <script>document.write(Array.from({length:2026-1970+1},(_,i)=>`<option value="${2026-i}">${2026-i}</option>`).join(''))</script>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label for="regWorkingBody">പ്രവർത്തിക്കുന്ന ഘടകം / സ്ഥാനം / Working Body / Position</label>
+                        <label for="regTimesAttended">ജില്ലാ സമ്മേളനത്തിൽ പങ്കെടുത്ത തവണ / Times Attended District Conference</label>
+                        <input type="number" id="regTimesAttended" class="form-control" min="0" max="50" placeholder="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="regWorkingBody">പ്രവർത്തിക്കുന്ന ഘടകം / സ്ഥാനം / Working Body & Position</label>
                         <input type="text" id="regWorkingBody" class="form-control" placeholder="Committee / Position" required>
                     </div>
                     <div class="form-group">
                         <label for="regUnit">ബ്ലോക്ക് / Block</label>
                         <input type="text" id="regUnit" class="form-control" placeholder="Block / Unit name" required>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="regPartyMember">രാഷ്ട്രീയ പാർട്ടിയിൽ അംഗമാണോ? / Party member</label>
-                            <input type="text" id="regPartyMember" class="form-control" placeholder="Party name or 'No'">
-                        </div>
-                        <div class="form-group">
-                            <label for="regPartyPosition">വഹിക്കുന്ന സ്ഥാനം / Position held</label>
-                            <input type="text" id="regPartyPosition" class="form-control" placeholder="Party position">
-                        </div>
+                    <div class="form-group">
+                        <label for="regPartyMember">രാഷ്ട്രീയ പാർട്ടിയിൽ അംഗമാണോ? / Political Party Member</label>
+                        <input type="text" id="regPartyMember" class="form-control" placeholder="Party name or 'No'">
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="regMassOrg">വർഗ ബഹുജന സംഘടന / Mass Org</label>
-                            <input type="text" id="regMassOrg" class="form-control" placeholder="Organisation or 'No'">
-                        </div>
-                        <div class="form-group">
-                            <label for="regMassOrgPosition">വഹിക്കുന്ന സ്ഥാനം / Position held</label>
-                            <input type="text" id="regMassOrgPosition" class="form-control" placeholder="Position">
-                        </div>
+                    <div class="form-group">
+                        <label for="regPartyPosition">പാർട്ടിയിൽ വഹിക്കുന്ന സ്ഥാനം / Party Position Held</label>
+                        <input type="text" id="regPartyPosition" class="form-control" placeholder="Position in party">
+                    </div>
+                    <div class="form-group">
+                        <label for="regMassOrg">വർഗ ബഹുജന സംഘടനയിൽ അംഗമാണോ? / Mass Organisation Member</label>
+                        <input type="text" id="regMassOrg" class="form-control" placeholder="Organisation name or 'No'">
+                    </div>
+                    <div class="form-group">
+                        <label for="regMassOrgPosition">സംഘടനയിൽ വഹിക്കുന്ന സ്ഥാനം / Mass Org Position Held</label>
+                        <input type="text" id="regMassOrgPosition" class="form-control" placeholder="Position in organisation">
                     </div>
 
                     <div class="form-section">Readings & Interests</div>
