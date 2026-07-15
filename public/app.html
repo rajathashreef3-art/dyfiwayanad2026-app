@@ -255,40 +255,108 @@
             box-shadow: 0 0 0 3px rgba(185,28,39,0.08);
         }
 
-        /* Dashboard hero (red gradient card) */
+        /* Dashboard hero (velvet gradient card) */
         .dash-hero {
             background: var(--grad);
             border-radius: var(--radius);
-            padding: 26px 24px;
+            padding: 24px 24px 26px;
             margin-bottom: 18px;
             color: #fff;
             position: relative;
             overflow: hidden;
-            box-shadow: var(--shadow-red);
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: var(--shadow-red), inset 0 1px 0 rgba(255,255,255,0.09);
+        }
+        .dash-hero::before {
+            content: '';
+            position: absolute;
+            left: -60px; top: -80px;
+            width: 240px; height: 240px;
+            background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 65%);
+            pointer-events: none;
         }
         .dash-hero::after {
             content: '★';
             position: absolute;
-            right: -14px; top: -26px;
-            font-size: 150px;
-            color: rgba(255,255,255,0.06);
+            right: -30px; bottom: -58px;
+            font-size: 190px;
+            color: rgba(255,255,255,0.05);
             line-height: 1;
+            transform: rotate(12deg);
             pointer-events: none;
         }
-        .dash-hero .hi { font-size: 13px; opacity: 0.85; font-weight: 600; }
-        .dash-hero h2 { font-size: 25px; font-weight: 800; letter-spacing: -0.5px; margin: 3px 0 4px; }
-        .dash-hero p { font-size: 13px; opacity: 0.9; display: flex; align-items: center; gap: 5px; }
-        .welcome-avatar {
-            position: absolute;
-            top: 24px; right: 24px;
-            width: 46px; height: 46px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.16);
-            border: 1px solid rgba(255,255,255,0.30);
+        .hero-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.62);
+            padding-top: 6px;
+        }
+        .hero-eyebrow .hero-star {
+            width: 11px; height: 11px;
+            background: #E8455A;
+            clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+        }
+        .hero-avatar {
+            width: 50px; height: 50px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.20);
             display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #fff;
+            backdrop-filter: blur(4px);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+        }
+        .dash-hero .hi {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.72);
+        }
+        .dash-hero h2 {
+            font-size: 27px;
+            font-weight: 800;
+            letter-spacing: -0.6px;
+            line-height: 1.12;
+            margin: 3px 0 0;
+        }
+        .hero-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 18px;
+        }
+        .hero-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 8px 13px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.92);
             backdrop-filter: blur(4px);
         }
-        .welcome-avatar svg { width: 21px; height: 21px; stroke: #fff; }
+        .hero-chip svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.75); }
+        .hero-chip .dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #7CF0A8;
+            box-shadow: 0 0 8px rgba(124,240,168,0.8);
+        }
 
         /* Dashboard poster */
         .dash-poster {
@@ -1007,10 +1075,19 @@
         <!-- PAGE 2: Dashboard -->
         <section id="dashPage" class="page">
             <div class="dash-hero">
-                <div class="welcome-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-                <div class="hi">Delegate Portal</div>
-                <h2 id="welcomeName">Welcome Comrade</h2>
-                <p id="welcomeUnit">DYFI Block/Unit</p>
+                <div class="hero-top">
+                    <div class="hero-eyebrow"><span class="hero-star"></span>DELEGATE PORTAL</div>
+                    <div class="hero-avatar" id="heroAvatar">DY</div>
+                </div>
+                <p class="hi">Welcome back,</p>
+                <h2 id="welcomeName">Comrade</h2>
+                <div class="hero-chips">
+                    <span class="hero-chip">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span id="welcomeUnit">DYFI Block/Unit</span>
+                    </span>
+                    <span class="hero-chip"><span class="dot"></span>Verified Delegate</span>
+                </div>
             </div>
 
             <div class="dash-poster">
@@ -1487,8 +1564,10 @@
                     const verifiedPart = verifiedData.participant;
 
                     // Set text bindings from verified database data
-                    document.getElementById('welcomeName').innerText = `Welcome, Comrade ${verifiedPart.name}`;
-                    document.getElementById('welcomeUnit').innerText = `Unit: ${verifiedPart.questionnaire?.unit || 'DYFI'}`;
+                    document.getElementById('welcomeName').innerText = `Comrade ${verifiedPart.name}`;
+                    document.getElementById('welcomeUnit').innerText = verifiedPart.questionnaire?.unit || 'DYFI';
+                    document.getElementById('heroAvatar').innerText = (verifiedPart.name || 'DY')
+                        .split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
                     
                     const q = verifiedPart.questionnaire || {};
                     document.getElementById('badgeName').innerText = verifiedPart.name;
