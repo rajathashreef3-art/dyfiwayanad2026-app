@@ -17,7 +17,7 @@
     
     <!-- Add font and icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Archivo+Black&family=Bebas+Neue&family=League+Spartan:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #C81E28;
@@ -641,15 +641,127 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ===== Loading splash (Claude Design handoff: Loading Splash) ===== */
+        #splash {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #FFFFFF;
+            transition: opacity .4s ease;
+        }
+        #splash.splash-hide { opacity: 0; pointer-events: none; }
+        .splash-inner {
+            height: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: space-between;
+            padding: calc(44px + env(safe-area-inset-top)) 30px calc(38px + env(safe-area-inset-bottom));
+            box-sizing: border-box;
+            animation: splashIn 1s cubic-bezier(.2,.9,.3,1.3) both;
+        }
+        @keyframes splashIn {
+            from { opacity: 0; transform: scale(.9); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+        .splash-star {
+            display: inline-block;
+            flex-shrink: 0;
+            clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+        }
+        .splash-eyebrow {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .splash-eyebrow span:nth-child(2) {
+            font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+            font-size: 12.5px;
+            letter-spacing: .12em;
+            color: #322B25;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1.1;
+        }
+        .splash-logo-wrap { flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; }
+        .splash-logo-wrap img {
+            width: min(329px, 82vw);
+            height: min(281px, 70vw);
+            display: block;
+            mix-blend-mode: multiply;
+            object-fit: cover;
+        }
+        .splash-progress { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+        .splash-progress .row { display: flex; justify-content: space-between; align-items: baseline; }
+        .splash-progress .cap {
+            font-family: 'League Spartan', 'Helvetica Neue', Arial, sans-serif;
+            font-size: 10px; font-weight: 700;
+            letter-spacing: .14em;
+            color: #59504A;
+        }
+        .splash-progress .pct {
+            font-family: 'Archivo Black', 'Arial Black', sans-serif;
+            font-size: 15px;
+            color: #C62828;
+        }
+        .splash-track {
+            width: 100%; height: 10px;
+            background: #DDCFA9;
+            border: 1.5px solid #191512;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .splash-fill {
+            width: 8%; height: 100%;
+            background: #C62828;
+            transition: width .22s ease-out;
+        }
+        .splash-date {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-top: 6px;
+        }
+        .splash-date span:nth-child(2) {
+            font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+            font-size: 13px;
+            letter-spacing: .09em;
+            color: #59504A;
+        }
+
         @media print {
             body { background: #fff; padding: 0; }
-            header, .tab-bar, .btn-print, .toast { display: none !important; }
+            header, .tab-bar, .btn-print, .toast, #splash { display: none !important; }
             .pass { box-shadow: none; }
         }
 
     </style>
 </head>
 <body>
+
+    <!-- Loading Splash -->
+    <div id="splash">
+        <div class="splash-inner">
+            <div class="splash-eyebrow">
+                <span class="splash-star" style="width:15px;height:15px;background:#C62828"></span>
+                <span>Democratic Youth Federation of India</span>
+                <span class="splash-star" style="width:15px;height:15px;background:#C62828"></span>
+            </div>
+
+            <div class="splash-logo-wrap">
+                <img src="assets/dyfi-wayanad-conference-logo.jpg" alt="DYFI Wayanad District Conference 2026">
+            </div>
+
+            <div class="splash-progress">
+                <div class="row">
+                    <span class="cap">PREPARING DELEGATE PASS</span>
+                    <span class="pct" id="splashPct">8%</span>
+                </div>
+                <div class="splash-track">
+                    <div class="splash-fill" id="splashFill"></div>
+                </div>
+                <div class="splash-date">
+                    <span class="splash-star" style="width:10px;height:10px;background:#948A80"></span>
+                    <span>JUL 17&ndash;19 &middot; MANANTHAVADY, WAYANAD</span>
+                    <span class="splash-star" style="width:10px;height:10px;background:#948A80"></span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Header bar -->
     <header>
@@ -908,7 +1020,7 @@
             </div>
 
             <div class="dash-poster">
-                <img src="/assets/conference-poster.jpg" alt="DYFI Wayanad District Conference 2026 poster" onerror="this.parentElement.style.display='none'">
+                <img src="assets/conference-poster.jpg" alt="DYFI Wayanad District Conference 2026 poster" onerror="this.parentElement.style.display='none'">
             </div>
 
             <div class="conf-banner">
@@ -1413,8 +1525,39 @@
             }
         }
 
+        // Loading splash: progress eases toward 90% until the portal is
+        // ready, then completes and fades out (design: Loading Splash handoff)
+        function bootSplash() {
+            const splash = document.getElementById('splash');
+            const pctEl = document.getElementById('splashPct');
+            const fillEl = document.getElementById('splashFill');
+            let p = 8, ready = false;
+            const render = () => {
+                pctEl.textContent = p + '%';
+                fillEl.style.width = p + '%';
+            };
+            render();
+            const t = setInterval(() => {
+                p += Math.max(2, Math.round((100 - p) * 0.10));
+                if (!ready && p > 90) p = 90;
+                if (p >= 100) {
+                    p = 100; render(); clearInterval(t);
+                    setTimeout(() => {
+                        splash.classList.add('splash-hide');
+                        setTimeout(() => splash.remove(), 450);
+                    }, 250);
+                    return;
+                }
+                render();
+            }, 240);
+            return () => { ready = true; };
+        }
+
         // Start App check
-        window.addEventListener('DOMContentLoaded', initPortal);
+        window.addEventListener('DOMContentLoaded', async () => {
+            const markReady = bootSplash();
+            try { await initPortal(); } finally { markReady(); }
+        });
     </script>
 </body>
 </html>
