@@ -232,6 +232,77 @@
             text-decoration: underline;
         }
 
+        /* Credential Form additions */
+        .form-section {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 6px 0;
+            margin: 22px 0 12px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .form-section:first-of-type {
+            border-top: none;
+            padding-top: 6px;
+            margin-top: 8px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .form-row { grid-template-columns: 1fr; gap: 0; }
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 84px;
+            font-family: inherit;
+        }
+
+        .choice-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .choice-row label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            color: var(--text);
+            cursor: pointer;
+            text-transform: none;
+            letter-spacing: 0;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .choice-row input[type="checkbox"],
+        .choice-row input[type="radio"] {
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+        }
+
+        .choice-row label:has(input:checked) {
+            border-color: var(--primary);
+            background: rgba(229,57,53,0.12);
+            color: white;
+        }
+
         /* Home Dashboard View */
         .dash-hero {
             background: var(--card);
@@ -691,46 +762,216 @@
             <!-- Sign Up Form -->
             <div id="signUpCard" class="auth-card">
                 <div class="auth-header">
-                    <h2>Delegate Portal</h2>
-                    <p>Register as a delegate for the conference</p>
+                    <h2>Credential Form</h2>
+                    <p>ഡി.വൈ.എഫ്.ഐ വയനാട് ജില്ലാ സമ്മേളനം — Delegate Credential</p>
                 </div>
                 <form id="signUpForm" onsubmit="handleRegister(event)">
+
+                    <div class="form-section">Personal Details</div>
+
                     <div class="form-group">
-                        <label for="regName">Full Name</label>
-                        <input type="text" id="regName" class="form-control" placeholder="Enter full name" required>
+                        <label for="regName">പേര് / Name</label>
+                        <input type="text" id="regName" class="form-control" placeholder="Full name" required>
                     </div>
                     <div class="form-group">
-                        <label for="regEmail">Email Address</label>
-                        <input type="email" id="regEmail" class="form-control" placeholder="Enter email" required>
+                        <label for="regAddress">മേൽവിലാസം / Address</label>
+                        <textarea id="regAddress" class="form-control" rows="2" placeholder="Full postal address" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regAge">വയസ്സ് / Age</label>
+                            <input type="number" id="regAge" class="form-control" min="1" max="120" placeholder="Age" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regPhone">ഫോൺ / Phone</label>
+                            <input type="tel" id="regPhone" class="form-control" placeholder="10-digit mobile" required>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="regPhone">Phone Number</label>
-                        <input type="tel" id="regPhone" class="form-control" placeholder="Enter 10-digit number" required>
+                        <label for="regEmail">Email <span style="text-transform:none;letter-spacing:0;font-weight:400;">(optional — for portal login)</span></label>
+                        <input type="email" id="regEmail" class="form-control" placeholder="you@example.com">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regEducation">വിദ്യാഭ്യാസം / Education</label>
+                            <input type="text" id="regEducation" class="form-control" placeholder="Qualification" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regOccupation">തൊഴിൽ / Occupation</label>
+                            <input type="text" id="regOccupation" class="form-control" placeholder="Occupation" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>വിവാഹിതാണോ / Married?</label>
+                            <div class="choice-row">
+                                <label><input type="radio" name="regMarried" value="Yes" required> അതെ / Yes</label>
+                                <label><input type="radio" name="regMarried" value="No"> അല്ല / No</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="regChildren">കുട്ടികൾ എത്ര / Children</label>
+                            <input type="number" id="regChildren" class="form-control" min="0" max="20" placeholder="0" value="0">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regBloodGroup">രക്തഗ്രൂപ്പ് / Blood Group</label>
+                            <select id="regBloodGroup" class="form-control" required>
+                                <option value="">Select</option>
+                                <option>A+</option><option>A-</option>
+                                <option>B+</option><option>B-</option>
+                                <option>AB+</option><option>AB-</option>
+                                <option>O+</option><option>O-</option>
+                                <option>Unknown</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="regCategory">ജനിച്ച വർഗം / Category</label>
+                            <input type="text" id="regCategory" class="form-control" placeholder="General / OBC / SC / ST" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section">Social Networks</div>
+
+                    <div class="form-group">
+                        <label>സോഷ്യൽ നെറ്റ്‌വർക്കിംഗ് സൈറ്റുകളിൽ അംഗമാണോ?</label>
+                        <div class="choice-row">
+                            <label><input type="radio" name="regSocialMember" value="Yes" checked onchange="toggleSocials(true)"> അതെ / Yes</label>
+                            <label><input type="radio" name="regSocialMember" value="No" onchange="toggleSocials(false)"> അല്ല / No</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="socialListGroup">
+                        <label>ഏതിലൊക്കെ / Which platforms</label>
+                        <div class="choice-row">
+                            <label><input type="checkbox" id="regSocInsta"> Instagram</label>
+                            <label><input type="checkbox" id="regSocThreads"> Threads</label>
+                            <label><input type="checkbox" id="regSocFacebook"> Facebook</label>
+                            <label><input type="checkbox" id="regSocTwitter"> Twitter</label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">Organisation</div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regYearJoined">ഡി.വൈ.എഫ്.ഐ.യിൽ ചേർന്ന വർഷം / Year joined DYFI</label>
+                            <input type="number" id="regYearJoined" class="form-control" min="1970" max="2026" placeholder="YYYY" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regTimesAttended">ജില്ലാ സമ്മേളനം / Times attended</label>
+                            <input type="number" id="regTimesAttended" class="form-control" min="0" max="50" placeholder="0" value="0">
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="regUnit">DYFI Block/Unit</label>
-                        <input type="text" id="regUnit" class="form-control" placeholder="Enter block/unit name" required>
+                        <label for="regWorkingBody">പ്രവർത്തിക്കുന്ന ഘടകം / സ്ഥാനം / Working Body / Position</label>
+                        <input type="text" id="regWorkingBody" class="form-control" placeholder="Committee / Position" required>
                     </div>
                     <div class="form-group">
-                        <label for="regFood">Food Preference</label>
-                        <select id="regFood" class="form-control" required>
-                            <option value="">Select Food Option</option>
-                            <option value="Non-Vegetarian">Non-Vegetarian</option>
-                            <option value="Vegetarian">Vegetarian</option>
-                        </select>
+                        <label for="regUnit">ബ്ലോക്ക് / Block</label>
+                        <input type="text" id="regUnit" class="form-control" placeholder="Block / Unit name" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regPartyMember">രാഷ്ട്രീയ പാർട്ടിയിൽ അംഗമാണോ? / Party member</label>
+                            <input type="text" id="regPartyMember" class="form-control" placeholder="Party name or 'No'">
+                        </div>
+                        <div class="form-group">
+                            <label for="regPartyPosition">വഹിക്കുന്ന സ്ഥാനം / Position held</label>
+                            <input type="text" id="regPartyPosition" class="form-control" placeholder="Party position">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regMassOrg">വർഗ ബഹുജന സംഘടന / Mass Org</label>
+                            <input type="text" id="regMassOrg" class="form-control" placeholder="Organisation or 'No'">
+                        </div>
+                        <div class="form-group">
+                            <label for="regMassOrgPosition">വഹിക്കുന്ന സ്ഥാനം / Position held</label>
+                            <input type="text" id="regMassOrgPosition" class="form-control" placeholder="Position">
+                        </div>
+                    </div>
+
+                    <div class="form-section">Readings & Interests</div>
+
+                    <div class="form-group">
+                        <label for="regNewspaper">വായിക്കുന്ന പത്രം / Newspaper read</label>
+                        <input type="text" id="regNewspaper" class="form-control" placeholder="Newspaper name">
                     </div>
                     <div class="form-group">
-                        <label for="regSize">T-Shirt Size</label>
-                        <select id="regSize" class="form-control" required>
-                            <option value="">Select T-Shirt Size</option>
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                            <option value="XXL">XXL</option>
-                        </select>
+                        <label for="regMagazine">വായിക്കുന്ന മാസിക/വാരിക / Magazine or Weekly</label>
+                        <input type="text" id="regMagazine" class="form-control" placeholder="Magazine name">
                     </div>
-                    <button type="submit" class="btn-submit" id="regSubmitBtn">REGISTER</button>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regLibraryClub">ഗ്രന്ഥശാല/കലാസമിതി / Library or Arts Club</label>
+                            <input type="text" id="regLibraryClub" class="form-control" placeholder="Yes / No / Details">
+                        </div>
+                        <div class="form-group">
+                            <label for="regYuvadhara">യുവധാര വരിക്കാരൻ / Yuvadhara subscriber</label>
+                            <select id="regYuvadhara" class="form-control">
+                                <option value="">Select</option>
+                                <option value="Yes">അതെ / Yes</option>
+                                <option value="No">അല്ല / No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regWriter">ഇഷ്ടപ്പെട്ട എഴുത്തുകാരൻ / Favourite Writer</label>
+                            <input type="text" id="regWriter" class="form-control" placeholder="Writer's name">
+                        </div>
+                        <div class="form-group">
+                            <label for="regHobby">ഇഷ്ടപ്പെട്ട വിനോദം / Favourite Hobby</label>
+                            <input type="text" id="regHobby" class="form-control" placeholder="Hobby / Pastime">
+                        </div>
+                    </div>
+
+                    <div class="form-section">Struggle & Legal</div>
+
+                    <div class="form-group">
+                        <label for="regCriminalCases">കേസുകളിൽ പ്രതിയാണോ / Accused in criminal cases (how many?)</label>
+                        <input type="text" id="regCriminalCases" class="form-control" placeholder="No / count &amp; details">
+                    </div>
+                    <div class="form-group">
+                        <label for="regImprisoned">ജയിൽവാസം / Imprisoned (duration)</label>
+                        <input type="text" id="regImprisoned" class="form-control" placeholder="No / duration">
+                    </div>
+                    <div class="form-group">
+                        <label for="regAssault">പോലീസ്/ഗുണ്ടാമർദ്ദനം / Police or Goonda assault</label>
+                        <input type="text" id="regAssault" class="form-control" placeholder="No / details">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regEmployment">Employment Exchange registered</label>
+                            <select id="regEmployment" class="form-control">
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="regPSC">PSC Rank List</label>
+                            <select id="regPSC" class="form-control">
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-section">Reflection</div>
+
+                    <div class="form-group">
+                        <label for="regReason">സംഘടനയിൽ ചേരാനുണ്ടായ കാരണം / Reason for joining</label>
+                        <textarea id="regReason" class="form-control" rows="3" placeholder="Why did you join DYFI?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="regExperience">മറക്കാനാകാത്ത അനുഭവം / Unforgettable experience</label>
+                        <textarea id="regExperience" class="form-control" rows="3" placeholder="An unforgettable moment from your work in the organisation"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="regSubmitBtn">SUBMIT CREDENTIAL</button>
                 </form>
                 <div class="auth-toggle">
                     Already registered? <span onclick="toggleAuth(true)">Find your pass</span>
@@ -920,6 +1161,22 @@
             }, 3000);
         }
 
+        // Show/hide the "which social networks" checkbox row
+        function toggleSocials(isMember) {
+            const grp = document.getElementById('socialListGroup');
+            grp.style.display = isMember ? '' : 'none';
+            if (!isMember) {
+                ['regSocInsta','regSocThreads','regSocFacebook','regSocTwitter']
+                    .forEach(id => { document.getElementById(id).checked = false; });
+            }
+        }
+
+        // Read the "Married?" radio
+        function readRadio(name) {
+            const el = document.querySelector(`input[name="${name}"]:checked`);
+            return el ? el.value : "";
+        }
+
         // Handle Registration
         async function handleRegister(e) {
             e.preventDefault();
@@ -928,30 +1185,67 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = `<span class="loader"></span>`;
 
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const phone = document.getElementById('regPhone').value;
-            const unit = document.getElementById('regUnit').value;
-            const food = document.getElementById('regFood').value;
-            const size = document.getElementById('regSize').value;
+            const val = id => document.getElementById(id).value.trim();
+            const chk = id => document.getElementById(id).checked;
+
+            const name  = val('regName');
+            const email = val('regEmail');
+            const phone = val('regPhone');
+
+            const socialMember = readRadio('regSocialMember');
+            const socialPlatforms = socialMember === 'Yes' ? [
+                chk('regSocInsta')    ? 'Instagram' : null,
+                chk('regSocThreads')  ? 'Threads'   : null,
+                chk('regSocFacebook') ? 'Facebook'  : null,
+                chk('regSocTwitter')  ? 'Twitter'   : null
+            ].filter(Boolean) : [];
+
+            const questionnaire = {
+                address:           val('regAddress'),
+                age:               val('regAge'),
+                education:         val('regEducation'),
+                occupation:        val('regOccupation'),
+                married:           readRadio('regMarried'),
+                children:          val('regChildren'),
+                bloodGroup:        val('regBloodGroup'),
+                category:          val('regCategory'),
+                socialMember:      socialMember,
+                socialPlatforms:   socialPlatforms,
+                yearJoined:        val('regYearJoined'),
+                timesAttended:     val('regTimesAttended'),
+                workingBody:       val('regWorkingBody'),
+                unit:              val('regUnit'),
+                partyMember:       val('regPartyMember'),
+                partyPosition:     val('regPartyPosition'),
+                massOrg:           val('regMassOrg'),
+                massOrgPosition:   val('regMassOrgPosition'),
+                newspaper:         val('regNewspaper'),
+                magazine:          val('regMagazine'),
+                libraryClub:       val('regLibraryClub'),
+                yuvadhara:         val('regYuvadhara'),
+                favouriteWriter:   val('regWriter'),
+                favouriteHobby:    val('regHobby'),
+                criminalCases:     val('regCriminalCases'),
+                imprisoned:        val('regImprisoned'),
+                assault:           val('regAssault'),
+                employmentExchange:val('regEmployment'),
+                pscRankList:       val('regPSC'),
+                reasonJoined:      val('regReason'),
+                unforgettable:     val('regExperience')
+            };
 
             try {
                 const res = await fetch(`${API_BASE}/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        name,
-                        email,
-                        phone,
-                        questionnaire: { unit, foodPreference: food, tShirtSize: size }
-                    })
+                    body: JSON.stringify({ name, email, phone, questionnaire })
                 });
 
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message || "Registration failed");
 
                 saveSession(data.token, data.participant);
-                showToast("Registration Successful!");
+                showToast("Credential submitted!");
                 initPortal();
             } catch (err) {
                 showToast(err.message, true);
