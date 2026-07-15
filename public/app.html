@@ -255,108 +255,72 @@
             box-shadow: 0 0 0 3px rgba(185,28,39,0.08);
         }
 
-        /* Dashboard hero (velvet gradient card) */
-        .dash-hero {
-            background: var(--grad);
-            border-radius: var(--radius);
-            padding: 24px 24px 26px;
-            margin-bottom: 18px;
-            color: #fff;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: var(--shadow-red), inset 0 1px 0 rgba(255,255,255,0.09);
-        }
-        .dash-hero::before {
+        /* Dashboard — editorial, on-background */
+        #dashPage { position: relative; }
+        #dashPage::before {
             content: '';
             position: absolute;
-            left: -60px; top: -80px;
-            width: 240px; height: 240px;
-            background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 65%);
+            top: -90px; left: -20px; right: -20px;
+            height: 400px;
+            background: radial-gradient(ellipse 85% 72% at 50% 0%, rgba(100,16,32,0.10) 0%, transparent 70%);
             pointer-events: none;
+            z-index: 0;
         }
-        .dash-hero::after {
-            content: '★';
-            position: absolute;
-            right: -30px; bottom: -58px;
-            font-size: 190px;
-            color: rgba(255,255,255,0.05);
-            line-height: 1;
-            transform: rotate(12deg);
-            pointer-events: none;
-        }
-        .hero-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .hero-eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: rgba(255,255,255,0.62);
-            padding-top: 6px;
-        }
-        .hero-eyebrow .hero-star {
-            width: 11px; height: 11px;
-            background: #E8455A;
-            clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
-        }
+        #dashPage > * { position: relative; z-index: 1; }
+
+        .dash-greet { display: flex; align-items: center; gap: 12px; margin: 2px 0 26px; }
         .hero-avatar {
-            width: 50px; height: 50px;
-            border-radius: 16px;
-            background: rgba(255,255,255,0.10);
-            border: 1px solid rgba(255,255,255,0.20);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: var(--grad);
             color: #fff;
-            backdrop-filter: blur(4px);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+            font-size: 14px; font-weight: 800; letter-spacing: 0.5px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
         }
-        .dash-hero .hi {
-            font-size: 14px;
-            font-weight: 500;
-            color: rgba(255,255,255,0.72);
+        .dash-greet .hi { font-size: 12.5px; color: var(--muted); font-weight: 500; }
+        .dash-greet h2 { font-size: 16.5px; font-weight: 700; letter-spacing: -0.2px; margin-top: 1px; }
+
+        .dash-eyebrow {
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 1.6px; text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 8px;
         }
-        .dash-hero h2 {
-            font-size: 27px;
-            font-weight: 800;
+        .dash-headline {
+            font-size: 30px;
+            line-height: 1.32;
             letter-spacing: -0.6px;
-            line-height: 1.12;
-            margin: 3px 0 0;
+            font-weight: 700;
+            color: var(--ink);
         }
-        .hero-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 18px;
-        }
+        .dash-headline .mut { color: #B3AEBA; font-weight: 600; }
+        .dash-headline .red { color: #7A1024; }
+
+        .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
         .hero-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255,255,255,0.10);
-            border: 1px solid rgba(255,255,255,0.15);
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #fff;
+            border: 1px solid var(--line);
             padding: 8px 13px;
             border-radius: 999px;
-            font-size: 12px;
-            font-weight: 600;
-            color: rgba(255,255,255,0.92);
-            backdrop-filter: blur(4px);
+            font-size: 12px; font-weight: 600;
+            color: var(--ink);
+            box-shadow: var(--shadow-sm);
         }
-        .hero-chip svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.75); }
-        .hero-chip .dot {
-            width: 7px; height: 7px;
-            border-radius: 50%;
-            background: #7CF0A8;
-            box-shadow: 0 0 8px rgba(124,240,168,0.8);
+        .hero-chip svg { width: 13px; height: 13px; stroke: var(--muted); }
+        .hero-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: #12A45A; }
+
+        .venue-list { margin: 22px 0 22px; }
+        .venue-row {
+            padding: 12px 2px;
+            border-top: 1px solid var(--line);
+            display: flex; flex-direction: column; gap: 3px;
         }
+        .venue-row:last-child { border-bottom: 1px solid var(--line); }
+        .venue-k { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+        .venue-v { font-size: 13px; color: var(--muted); }
 
         /* Dashboard poster */
         .dash-poster {
@@ -368,19 +332,6 @@
             box-shadow: var(--shadow);
         }
         .dash-poster img { display: block; width: 100%; height: auto; }
-
-        /* Conference banner */
-        .conf-banner {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            padding: 22px 24px;
-            margin-bottom: 18px;
-            box-shadow: var(--shadow-sm);
-            position: relative;
-        }
-        .conf-banner h3 { font-size: 15px; font-weight: 800; margin-bottom: 8px; }
-        .conf-banner p { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
         /* Info grid */
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
@@ -1074,33 +1025,41 @@
 
         <!-- PAGE 2: Dashboard -->
         <section id="dashPage" class="page">
-            <div class="dash-hero">
-                <div class="hero-top">
-                    <div class="hero-eyebrow"><span class="hero-star"></span>DELEGATE PORTAL</div>
-                    <div class="hero-avatar" id="heroAvatar">DY</div>
+            <div class="dash-greet">
+                <div class="hero-avatar" id="heroAvatar">DY</div>
+                <div>
+                    <p class="hi" id="greetHi">Welcome back,</p>
+                    <h2 id="welcomeName">Comrade</h2>
                 </div>
-                <p class="hi">Welcome back,</p>
-                <h2 id="welcomeName">Comrade</h2>
-                <div class="hero-chips">
-                    <span class="hero-chip">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <span id="welcomeUnit">DYFI Block/Unit</span>
-                    </span>
-                    <span class="hero-chip"><span class="dot"></span>Verified Delegate</span>
+            </div>
+
+            <div class="dash-eyebrow">16th District Conference</div>
+            <h1 class="dash-headline">
+                <span class="mut">2026</span> ജൂലൈ 17, 18, 19<br>
+                <span class="red">മാനന്തവാടി</span><span class="mut">, വയനാട്</span>
+            </h1>
+
+            <div class="hero-chips">
+                <span class="hero-chip">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span id="welcomeUnit">DYFI Block/Unit</span>
+                </span>
+                <span class="hero-chip"><span class="dot"></span>Verified Delegate</span>
+            </div>
+
+            <div class="venue-list">
+                <div class="venue-row">
+                    <span class="venue-k">പ്രതിനിധി സമ്മേളനം</span>
+                    <span class="venue-v">സ: എൻ വി ബിനീഷ് നഗർ</span>
+                </div>
+                <div class="venue-row">
+                    <span class="venue-k">പൊതു സമ്മേളനം</span>
+                    <span class="venue-v">സ: പുഷ്പൻ നഗർ, മാനന്തവാടി</span>
                 </div>
             </div>
 
             <div class="dash-poster">
                 <img src="assets/conference-poster.jpg" alt="DYFI Wayanad District Conference 2026 poster" onerror="this.parentElement.style.display='none'">
-            </div>
-
-            <div class="conf-banner">
-                <h3>16th District Committee Conference</h3>
-                <p>
-                    <strong style="color:var(--ink);">2026 ജൂലൈ 17, 18, 19</strong><br><br>
-                    <strong style="color:var(--ink);">പ്രതിനിധി സമ്മേളനം:</strong><br>സ: എൻ വി ബിനീഷ് നഗർ<br><br>
-                    <strong style="color:var(--ink);">പൊതു സമ്മേളനം:</strong><br>സ: പുഷ്പൻ നഗർ, മാനന്തവാടി
-                </p>
             </div>
 
             <div class="info-grid">
@@ -1564,6 +1523,9 @@
                     const verifiedPart = verifiedData.participant;
 
                     // Set text bindings from verified database data
+                    const hr = new Date().getHours();
+                    document.getElementById('greetHi').innerText =
+                        hr < 12 ? 'Good morning,' : hr < 17 ? 'Good afternoon,' : 'Good evening,';
                     document.getElementById('welcomeName').innerText = `Comrade ${verifiedPart.name}`;
                     document.getElementById('welcomeUnit').innerText = verifiedPart.questionnaire?.unit || 'DYFI';
                     document.getElementById('heroAvatar').innerText = (verifiedPart.name || 'DY')
