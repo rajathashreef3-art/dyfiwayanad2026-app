@@ -1029,16 +1029,23 @@
                         <h3>DELEGATE PASS</h3>
                         <p>DYFI WAYANAD DISTRICT CONFERENCE 2026</p>
                     </div>
-                    
+
                     <div class="badge-qr">
                         <img id="badgeQrImg" src="" alt="QR Pass">
                     </div>
 
                     <h2 class="badge-name" id="badgeName">Comrade Name</h2>
-                    
-                    <div class="badge-details">
-                        <div class="badge-chip" id="badgeUnit">Unit Name</div>
-                        <div class="badge-chip" id="badgeTShirt">Size: M</div>
+
+                    <div class="badge-details" style="flex-direction:column;align-items:center;gap:8px;">
+                        <div class="badge-chip" id="badgeUnit">Block / Unit</div>
+                        <div class="badge-details" style="gap:8px;flex-wrap:wrap;justify-content:center;">
+                            <div class="badge-chip" id="badgePosition">Position</div>
+                            <div class="badge-chip" id="badgePhone">Phone</div>
+                        </div>
+                        <div class="badge-details" style="gap:8px;flex-wrap:wrap;justify-content:center;">
+                            <div class="badge-chip" id="badgeBlood">Blood Group</div>
+                            <div class="badge-chip" id="badgeYear">Year Joined</div>
+                        </div>
                     </div>
 
                     <div class="badge-footer">
@@ -1434,9 +1441,13 @@
                     document.getElementById('welcomeName').innerText = `Welcome, Comrade ${verifiedPart.name}`;
                     document.getElementById('welcomeUnit').innerText = `Unit: ${verifiedPart.questionnaire?.unit || 'DYFI'}`;
                     
+                    const q = verifiedPart.questionnaire || {};
                     document.getElementById('badgeName').innerText = verifiedPart.name;
-                    document.getElementById('badgeUnit').innerText = verifiedPart.questionnaire?.unit || 'DYFI';
-                    document.getElementById('badgeTShirt').innerText = `T-Shirt: ${verifiedPart.questionnaire?.tShirtSize || 'M'}`;
+                    document.getElementById('badgeUnit').innerText = q.unit || 'DYFI';
+                    document.getElementById('badgePosition').innerText = q.workingBody || 'Delegate';
+                    document.getElementById('badgePhone').innerText = verifiedPart.phone || '';
+                    document.getElementById('badgeBlood').innerText = q.bloodGroup || '—';
+                    document.getElementById('badgeYear').innerText = q.yearJoined ? `Since ${q.yearJoined}` : '';
                     document.getElementById('badgeQrImg').src = verifiedPart.qrCode;
 
                     // Save verified data to cache
