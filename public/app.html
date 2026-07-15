@@ -255,32 +255,24 @@
             box-shadow: 0 0 0 3px rgba(185,28,39,0.08);
         }
 
-        /* Dashboard hero (velvet gradient card) */
+        /* Dashboard hero (light, unfilled) */
         .dash-hero {
-            background: var(--grad);
+            background: var(--card);
             border-radius: var(--radius);
-            padding: 24px 24px 26px;
-            margin-bottom: 18px;
-            color: #fff;
+            padding: 20px 20px 22px;
+            margin-bottom: 16px;
+            color: var(--ink);
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: var(--shadow-red), inset 0 1px 0 rgba(255,255,255,0.09);
-        }
-        .dash-hero::before {
-            content: '';
-            position: absolute;
-            left: -60px; top: -80px;
-            width: 240px; height: 240px;
-            background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 65%);
-            pointer-events: none;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-sm);
         }
         .dash-hero::after {
             content: '★';
             position: absolute;
-            right: -30px; bottom: -58px;
-            font-size: 190px;
-            color: rgba(255,255,255,0.05);
+            right: -26px; bottom: -54px;
+            font-size: 180px;
+            color: rgba(100,16,32,0.045);
             line-height: 1;
             transform: rotate(12deg);
             pointer-events: none;
@@ -289,7 +281,7 @@
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 14px;
         }
         .hero-eyebrow {
             display: inline-flex;
@@ -298,64 +290,59 @@
             font-size: 10px;
             font-weight: 800;
             letter-spacing: 2px;
-            color: rgba(255,255,255,0.62);
+            color: var(--muted);
             padding-top: 6px;
         }
         .hero-eyebrow .hero-star {
             width: 11px; height: 11px;
-            background: #E8455A;
+            background: var(--primary);
             clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
         }
         .hero-avatar {
-            width: 50px; height: 50px;
-            border-radius: 16px;
-            background: rgba(255,255,255,0.10);
-            border: 1px solid rgba(255,255,255,0.20);
+            width: 46px; height: 46px;
+            border-radius: 14px;
+            background: var(--grad);
             display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #fff;
-            backdrop-filter: blur(4px);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
         }
         .dash-hero .hi {
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 500;
-            color: rgba(255,255,255,0.72);
+            color: var(--muted);
         }
         .dash-hero h2 {
-            font-size: 27px;
+            font-size: 23px;
             font-weight: 800;
-            letter-spacing: -0.6px;
-            line-height: 1.12;
+            letter-spacing: -0.5px;
+            line-height: 1.15;
             margin: 3px 0 0;
         }
         .hero-chips {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 18px;
+            margin-top: 14px;
         }
         .hero-chip {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(255,255,255,0.10);
-            border: 1px solid rgba(255,255,255,0.15);
+            background: var(--soft);
+            border: 1px solid transparent;
             padding: 8px 13px;
             border-radius: 999px;
             font-size: 12px;
             font-weight: 600;
-            color: rgba(255,255,255,0.92);
-            backdrop-filter: blur(4px);
+            color: var(--ink);
         }
-        .hero-chip svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.75); }
+        .hero-chip svg { width: 13px; height: 13px; stroke: var(--muted); }
         .hero-chip .dot {
             width: 7px; height: 7px;
             border-radius: 50%;
-            background: #7CF0A8;
-            box-shadow: 0 0 8px rgba(124,240,168,0.8);
+            background: #12A45A;
         }
 
         /* Dashboard poster */
@@ -420,53 +407,53 @@
         }
 
         .pass-top {
-            background: var(--grad);
-            padding: 22px 24px 26px;
-            color: #fff;
+            background: var(--card);
+            padding: 20px 22px 22px;
+            color: var(--ink);
             position: relative;
             overflow: hidden;
         }
         .pass-top::after {
             content: '★';
-            position: absolute; right: -20px; top: -34px;
-            font-size: 150px; color: rgba(255,255,255,0.06); line-height: 1;
+            position: absolute; right: -18px; top: -30px;
+            font-size: 140px; color: rgba(100,16,32,0.05); line-height: 1;
         }
         .pass-top-row { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1; }
-        .pass-brand-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.82; font-weight: 700; }
-        .pass-brand-title { font-size: 18px; font-weight: 800; margin-top: 4px; letter-spacing: -0.3px; line-height: 1.15; max-width: 190px; }
+        .pass-brand-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); font-weight: 800; }
+        .pass-brand-title { font-size: 17px; font-weight: 800; margin-top: 4px; letter-spacing: -0.3px; line-height: 1.15; max-width: 200px; }
         .pass-status {
-            background: rgba(24,12,3,0.28);
-            border: 1px solid rgba(255,255,255,0.30);
+            background: var(--green-bg);
+            border: 1px solid rgba(18,164,90,0.25);
+            color: #0E7A43;
             padding: 6px 13px;
             border-radius: 30px;
             font-size: 10.5px;
             font-weight: 800;
             letter-spacing: 0.5px;
             display: inline-flex; align-items: center; gap: 6px;
-            backdrop-filter: blur(6px);
             white-space: nowrap;
         }
-        .pass-status .dot { width: 6px; height: 6px; border-radius: 50%; background: #7CF0A8; box-shadow: 0 0 8px #7CF0A8; }
+        .pass-status .dot { width: 6px; height: 6px; border-radius: 50%; background: #12A45A; }
 
         .pass-idrow {
-            display: flex; align-items: center; gap: 10px;
-            margin-top: 20px; position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 12px;
+            margin-top: 16px; position: relative; z-index: 1;
         }
         .pass-avatar {
-            width: 54px; height: 54px; border-radius: 16px;
-            background: rgba(255,255,255,0.16);
-            border: 1px solid rgba(255,255,255,0.30);
+            width: 50px; height: 50px; border-radius: 15px;
+            background: var(--soft);
+            border: 1px solid var(--line);
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
         }
-        .pass-avatar svg { width: 24px; height: 24px; stroke: #fff; }
-        .pass-name { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.1; }
-        .pass-role { font-size: 12px; opacity: 0.9; margin-top: 3px; }
+        .pass-avatar svg { width: 22px; height: 22px; stroke: var(--muted); }
+        .pass-name { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.1; color: var(--ink); }
+        .pass-role { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
 
         /* perforation divider */
         .pass-perf {
             height: 26px;
-            background: #16060A;
+            background: var(--card);
             position: relative;
         }
         .pass-perf::before, .pass-perf::after {
@@ -474,12 +461,13 @@
             position: absolute; top: 50%; transform: translateY(-50%);
             width: 26px; height: 26px; border-radius: 50%;
             background: var(--bg);
+            border: 1px solid var(--line);
         }
         .pass-perf::before { left: -13px; }
         .pass-perf::after { right: -13px; }
         .pass-perf .dashes {
-            position: absolute; left: 20px; right: 20px; top: 50%;
-            border-top: 2px dashed rgba(255,255,255,0.55);
+            position: absolute; left: 24px; right: 24px; top: 50%;
+            border-top: 2px dashed rgba(28,26,31,0.16);
         }
 
         .pass-body { padding: 26px 24px 28px; background: #fff; }
