@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DYFI Wayanad 2026 — Web Portal</title>
+    <script>
+        // Capture native install prompt early
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            window.deferredPrompt = e;
+            // Dispatch a custom event so the script at the bottom knows
+            window.dispatchEvent(new CustomEvent('deferredpromptready'));
+        });
+    </script>
     
     <!-- PWA Settings -->
     <link rel="manifest" href="/manifest.json">
@@ -2099,6 +2108,15 @@
 
     <script>
         (function() {
+            // Register Service Worker to satisfy Chrome PWA criteria
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(reg => console.log('SW registered successfully:', reg.scope))
+                        .catch(err => console.error('SW registration failed:', err));
+                });
+            }
+
             // Don't show if already installed (running in standalone/fullscreen mode)
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches
                 || window.navigator.standalone === true;
@@ -2109,7 +2127,8 @@
             // if (dismissedAt && (Date.now() - parseInt(dismissedAt)) < 3 * 24 * 60 * 60 * 1000) return;
 
             const ua = navigator.userAgent;
-            const isIOS = /iphone|ipad|ipod/i.test(ua);
+            const isIOS = /iphone|ipad|ipod/i.test(ua)
+                || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
             const isSafari = isIOS && /safari/i.test(ua) && !/crios|fxios|opios/i.test(ua);
             const isAndroid = /android/i.test(ua);
 
@@ -2127,18 +2146,26 @@
             }
 
             // ── Chrome / Android: native prompt ──
-            let deferredPrompt = null;
+            if (window.deferredPrompt && isAndroid) {
+                showOverlay('pwa-chrome-overlay');
+            }
+
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
-                deferredPrompt = e;
+                window.deferredPrompt = e;
+                if (isAndroid) showOverlay('pwa-chrome-overlay');
+            });
+
+            window.addEventListener('deferredpromptready', () => {
                 if (isAndroid) showOverlay('pwa-chrome-overlay');
             });
 
             document.getElementById('pwa-chrome-install-btn').addEventListener('click', async () => {
-                if (!deferredPrompt) return;
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                deferredPrompt = null;
+                const promptEvent = window.deferredPrompt;
+                if (!promptEvent) return;
+                promptEvent.prompt();
+                const { outcome } = await promptEvent.userChoice;
+                window.deferredPrompt = null;
                 hideOverlay('pwa-chrome-overlay');
             });
 
