@@ -799,6 +799,7 @@
             letter-spacing: .09em;
             color: #59504A;
         }
+        .splash-date .splash-star { position: relative; top: 1.5px; flex-shrink: 0; }
 
         @media print {
             body { background: #fff; padding: 0; }
@@ -825,7 +826,7 @@
 
             <div class="splash-progress">
                 <div class="row">
-                    <span class="cap">PREPARING DELEGATE PASS</span>
+                    <span class="cap">LOADING</span>
                     <span class="pct" id="splashPct">8%</span>
                 </div>
                 <div class="splash-track">
@@ -1107,6 +1108,10 @@
 
             <div id="editBanner" class="edit-banner" style="display:none;"></div>
 
+            <div class="dash-poster">
+                <img src="assets/conference-poster.jpg" alt="DYFI Wayanad District Conference 2026 poster" onerror="this.parentElement.style.display='none'">
+            </div>
+
             <div class="conf-banner">
                 <h3>16th District Committee Conference</h3>
                 <p>
@@ -1131,10 +1136,6 @@
                         <p>View Pass</p>
                     </div>
                 </div>
-            </div>
-
-            <div class="dash-poster">
-                <img src="assets/conference-poster.jpg" alt="DYFI Wayanad District Conference 2026 poster" onerror="this.parentElement.style.display='none'">
             </div>
         </section>
 
