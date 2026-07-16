@@ -7,13 +7,14 @@
     
     <!-- PWA Settings -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#EAE8EC">
+    <meta name="theme-color" content="#F4F3F6">
 
     <!-- Apple iOS Standalone Web App Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="DYFI 2026">
-    <link rel="apple-touch-icon" href="https://img.icons8.com/color/512/star.png">
+    <link rel="icon" type="image/png" href="/assets/app-icon-192.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
     
     <!-- Add font and icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,7 +52,8 @@
             flex-direction: column;
             -webkit-font-smoothing: antialiased;
             background-image:
-                radial-gradient(ellipse 70% 36% at 50% -14%, rgba(100,16,32,0.05) 0%, transparent 60%);
+                radial-gradient(ellipse 90% 55% at 50% 0%, rgba(247,214,110,0.28) 0%, rgba(247,214,110,0.08) 38%, transparent 68%),
+                radial-gradient(ellipse 70% 36% at 50% -14%, rgba(100,16,32,0.04) 0%, transparent 60%);
             background-attachment: fixed;
             padding-bottom: 96px;
         }
@@ -78,15 +80,16 @@
         .logo-star {
             width: 40px;
             height: 40px;
-            background: var(--grad);
             border-radius: 13px;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid var(--line);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            color: #fff;
-            box-shadow: 0 2px 6px rgba(45,6,14,0.22);
+            box-shadow: var(--shadow-sm);
         }
+        .logo-star img { width: 100%; height: 100%; object-fit: contain; }
 
         .header-title h1 { font-size: 15px; font-weight: 800; letter-spacing: -0.2px; color: var(--ink); }
         .header-title p { font-size: 10.5px; color: var(--muted); font-weight: 600; margin-top: 1px; }
@@ -342,30 +345,38 @@
         .conf-banner p { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
         /* Info grid */
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
         .info-card {
             background: var(--card);
             border: 1px solid var(--line);
-            border-radius: 22px;
-            padding: 19px 18px;
+            border-radius: 20px;
+            padding: 15px 14px;
             display: flex;
             align-items: center;
-            gap: 13px;
+            gap: 11px;
             box-shadow: var(--shadow-sm);
             cursor: pointer;
             transition: transform 0.15s;
         }
         .info-card:active { transform: scale(0.98); }
         .info-icon {
-            width: 44px; height: 44px;
+            width: 40px; height: 40px;
             background: var(--red-tint);
-            border-radius: 14px;
+            border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
         }
-        .info-icon svg { width: 20px; height: 20px; stroke: var(--primary); }
-        .info-text h4 { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 700; }
-        .info-text p { font-size: 14px; font-weight: 700; margin-top: 3px; }
+        .info-icon svg { width: 19px; height: 19px; stroke: var(--primary); }
+        .info-text { min-width: 0; }
+        .info-text h4 {
+            font-size: 9.5px; color: var(--muted); text-transform: uppercase;
+            letter-spacing: 0.3px; font-weight: 700; line-height: 1.2;
+            white-space: nowrap;
+        }
+        .info-text p {
+            font-size: 14px; font-weight: 700; margin-top: 3px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
 
         /* ============ DELEGATE PASS (modern) ============ */
         .badge-container { margin-bottom: 20px; perspective: 1200px; }
@@ -788,10 +799,9 @@
     <!-- Header bar -->
     <header>
         <div class="header-logo">
-            <div class="logo-star">★</div>
+            <div class="logo-star"><img src="assets/app-icon-192.png" alt="DYFI Wayanad" width="40" height="40"></div>
             <div class="header-title">
                 <h1>DYFI WAYANAD</h1>
-                <p>16th District Conference</p>
             </div>
         </div>
         <button id="logoutBtn" class="logout-btn" onclick="logout()">LOGOUT</button>
@@ -962,6 +972,10 @@
                         <label for="regHobby">ഇഷ്ടപ്പെട്ട വിനോദം / Favourite Hobby</label>
                         <input type="text" id="regHobby" class="form-control" placeholder="Hobby / Pastime">
                     </div>
+                    <div class="form-group">
+                        <label for="regWorldCup">2026 ലോകകപ്പിൽ വിജയി ആവാൻ സാധ്യത ഉള്ള ടീം? / Predicted 2026 World Cup Winner</label>
+                        <input type="text" id="regWorldCup" class="form-control" placeholder="e.g. Argentina, Brazil, France...">
+                    </div>
 
                     <div class="form-section">Struggle & Legal</div>
 
@@ -1047,10 +1061,6 @@
                 </div>
             </div>
 
-            <div class="dash-poster">
-                <img src="assets/conference-poster.jpg" alt="DYFI Wayanad District Conference 2026 poster" onerror="this.parentElement.style.display='none'">
-            </div>
-
             <div class="conf-banner">
                 <h3>16th District Committee Conference</h3>
                 <p>
@@ -1075,6 +1085,10 @@
                         <p>View Pass</p>
                     </div>
                 </div>
+            </div>
+
+            <div class="dash-poster">
+                <img src="assets/conference-poster.jpg" alt="DYFI Wayanad District Conference 2026 poster" onerror="this.parentElement.style.display='none'">
             </div>
         </section>
 
@@ -1306,6 +1320,7 @@
                 yuvadhara:         val('regYuvadhara'),
                 favouriteWriter:   val('regWriter'),
                 favouriteHobby:    val('regHobby'),
+                worldCupPick:      val('regWorldCup'),
                 criminalCases:     val('regCriminalCases'),
                 imprisoned:        val('regImprisoned'),
                 assault:           val('regAssault'),
