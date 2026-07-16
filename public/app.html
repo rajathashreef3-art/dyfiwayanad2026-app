@@ -389,6 +389,103 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
+        /* Quick-access souvenir card - special gold variant */
+        .info-card.souvenir-card {
+            background: linear-gradient(135deg, #FFF8E8 0%, #FFF3D4 100%);
+            border-color: rgba(193,130,0,0.30);
+        }
+        .info-card.souvenir-card .info-icon {
+            background: rgba(193,130,0,0.12);
+        }
+        .info-card.souvenir-card .info-icon svg { stroke: #A07800; }
+
+        /* ── Flipbook Viewer ── */
+        #souvenirPage {
+            padding: 0;
+            background: #0F0F0F;
+        }
+        .flipbook-header {
+            display: flex; align-items: center; gap: 14px;
+            padding: 16px 20px;
+            background: #111;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            position: sticky; top: 0; z-index: 20;
+        }
+        .flipbook-back-btn {
+            width: 38px; height: 38px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; flex-shrink: 0;
+        }
+        .flipbook-back-btn svg { width: 18px; height: 18px; stroke: #fff; }
+        .flipbook-title {
+            font-size: 15px; font-weight: 800; color: #fff; flex: 1;
+        }
+        .flipbook-counter {
+            font-size: 12px; font-weight: 700;
+            color: rgba(255,255,255,0.5);
+        }
+        .flipbook-stage {
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+            min-height: calc(100vh - 120px);
+            overflow: hidden;
+        }
+        .flipbook-page-display {
+            width: 100%;
+            max-width: 520px;
+            padding: 16px;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        .flipbook-page-display img {
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+            display: block;
+            transition: opacity 0.25s ease;
+        }
+        .flipbook-page-display img.flipping { opacity: 0; }
+        .flipbook-controls {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 16px;
+            padding: 14px 20px 28px;
+            background: #111;
+        }
+        .fb-nav-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 10px 18px; border-radius: 30px;
+            cursor: pointer; font-size: 13px; font-weight: 700;
+            transition: all 0.2s; font-family: inherit;
+        }
+        .fb-nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+        .fb-nav-btn svg { width: 16px; height: 16px; stroke: currentColor; }
+        .flipbook-thumbnails {
+            display: flex; gap: 8px; overflow-x: auto;
+            padding: 0 20px 20px; scrollbar-width: none;
+        }
+        .flipbook-thumbnails::-webkit-scrollbar { display: none; }
+        .fb-thumb {
+            flex-shrink: 0; width: 54px; height: 72px;
+            border-radius: 8px; overflow: hidden;
+            border: 2px solid transparent;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .fb-thumb.active { border-color: #F5C518; }
+        .fb-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .flipbook-empty {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            min-height: 60vh; gap: 12px; color: rgba(255,255,255,0.4);
+            font-size: 14px; text-align: center; padding: 40px;
+        }
+        .flipbook-empty .big-icon { font-size: 56px; opacity: 0.4; }
+
         /* Edit window banner + countdown */
         .edit-banner {
             border-radius: 20px;
@@ -1163,9 +1260,37 @@
                         <p>View Pass</p>
                     </div>
                 </div>
+                <div class="info-card souvenir-card" onclick="openSouvenir()" style="grid-column: span 2;">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    </div>
+                    <div class="info-text">
+                        <h4>Conference Souvenir</h4>
+                        <p>📖 View Flipbook</p>
+                    </div>
+                </div>
             </div>
         </section>
 
+
+        <!-- PAGE: Souvenir Flipbook Viewer -->
+        <section id="souvenirPage" class="page">
+            <div class="flipbook-header">
+                <button class="flipbook-back-btn" onclick="switchPage('dash')" aria-label="Go back">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <div class="flipbook-title" id="souvenirTitle">Conference Souvenir</div>
+                <div class="flipbook-counter" id="fbCounter"></div>
+            </div>
+
+            <div id="fbContent">
+                <!-- Filled dynamically by JS -->
+                <div class="flipbook-empty">
+                    <div class="big-icon">📖</div>
+                    <p>Loading souvenir...</p>
+                </div>
+            </div>
+        </section>
 
         <!-- PAGE 3: Ticket (QR Code) -->
         <section id="ticketPage" class="page">
@@ -1318,6 +1443,95 @@
                 loadAnnouncements();
             }
             if (pageName === 'files') loadResources();
+        }
+
+        // ── Souvenir Flipbook ──
+        let fbPages = [];
+        let fbCurrentPage = 0;
+        let fbTitle = 'Conference Souvenir';
+
+        async function openSouvenir() {
+            switchPage('souvenir');
+            const content = document.getElementById('fbContent');
+            content.innerHTML = `<div class="flipbook-empty"><div class="big-icon">📖</div><p>Loading souvenir...</p></div>`;
+            try {
+                const res = await fetch(`${API_BASE}/souvenir`);
+                const data = await res.json();
+                fbPages = data.pages || [];
+                fbTitle = data.title || 'Conference Souvenir';
+                fbCurrentPage = 0;
+                document.getElementById('souvenirTitle').textContent = fbTitle;
+                renderFlipbook();
+            } catch (e) {
+                document.getElementById('fbContent').innerHTML = `<div class="flipbook-empty"><div class="big-icon">⚠️</div><p>Failed to load souvenir. Please try again.</p></div>`;
+            }
+        }
+
+        function renderFlipbook() {
+            const content = document.getElementById('fbContent');
+            if (!fbPages.length) {
+                content.innerHTML = `<div class="flipbook-empty"><div class="big-icon">📖</div><p>The souvenir hasn't been published yet.<br>Check back soon!</p></div>`;
+                document.getElementById('fbCounter').textContent = '';
+                return;
+            }
+            document.getElementById('fbCounter').textContent = `${fbCurrentPage + 1} / ${fbPages.length}`;
+
+            // Build thumbnails strip
+            const thumbs = fbPages.map((url, i) => `
+                <div class="fb-thumb ${i === fbCurrentPage ? 'active' : ''}" onclick="goToPage(${i})">
+                    <img src="${url}" alt="Page ${i+1}" loading="lazy">
+                </div>
+            `).join('');
+
+            content.innerHTML = `
+                <div class="flipbook-stage" id="fbStage">
+                    <div class="flipbook-page-display" id="fbDisplay">
+                        <img id="fbPageImg" src="${fbPages[fbCurrentPage]}" alt="Souvenir page ${fbCurrentPage + 1}">
+                    </div>
+                </div>
+                <div class="flipbook-controls">
+                    <button class="fb-nav-btn" id="fbPrev" onclick="changePage(-1)" ${fbCurrentPage === 0 ? 'disabled' : ''}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                        Prev
+                    </button>
+                    <button class="fb-nav-btn" id="fbNext" onclick="changePage(1)" ${fbCurrentPage === fbPages.length - 1 ? 'disabled' : ''}>
+                        Next
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                </div>
+                <div class="flipbook-thumbnails" id="fbThumbs">${thumbs}</div>
+            `;
+
+            // Touch swipe detection
+            let touchStartX = 0;
+            const stage = document.getElementById('fbStage');
+            stage.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+            stage.addEventListener('touchend', e => {
+                const dx = e.changedTouches[0].screenX - touchStartX;
+                if (Math.abs(dx) > 50) changePage(dx < 0 ? 1 : -1);
+            });
+        }
+
+        function changePage(dir) {
+            const next = fbCurrentPage + dir;
+            if (next < 0 || next >= fbPages.length) return;
+            const img = document.getElementById('fbPageImg');
+            if (img) img.classList.add('flipping');
+            setTimeout(() => {
+                fbCurrentPage = next;
+                renderFlipbook();
+                // Scroll thumbnail into view
+                const thumb = document.querySelector('.fb-thumb.active');
+                if (thumb) thumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }, 200);
+        }
+
+        function goToPage(index) {
+            if (index === fbCurrentPage) return;
+            fbCurrentPage = index;
+            renderFlipbook();
+            const thumb = document.querySelector('.fb-thumb.active');
+            if (thumb) thumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         }
 
         // Toggle Sign Up / Retrieve Ticket forms
