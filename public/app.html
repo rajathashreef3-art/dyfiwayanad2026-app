@@ -1845,6 +1845,29 @@
             const markReady = bootSplash();
             try { await initPortal(); } finally { markReady(); }
         });
+
+        // ── Real-time Force Refresh Poll ──
+        let currentRefreshKey = localStorage.getItem('lastForceRefreshKey');
+        async function checkForForceRefresh() {
+            try {
+                const res = await fetch(`${API_BASE}/event`);
+                if (!res.ok) return;
+                const event = await res.json();
+                if (event.lastForceRefresh) {
+                    if (!currentRefreshKey) {
+                        localStorage.setItem('lastForceRefreshKey', event.lastForceRefresh);
+                        currentRefreshKey = event.lastForceRefresh;
+                    } else if (currentRefreshKey !== event.lastForceRefresh) {
+                        localStorage.setItem('lastForceRefreshKey', event.lastForceRefresh);
+                        window.location.reload(true);
+                    }
+                }
+            } catch (e) {
+                console.error('Refresh poll error:', e);
+            }
+        }
+        setInterval(checkForForceRefresh, 15000);
+        checkForForceRefresh();
     </script>
 
     <!-- ═══════════════════════════════════════════════════
