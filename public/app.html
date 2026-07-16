@@ -689,6 +689,18 @@
             box-shadow: 0 2px 6px rgba(45,6,14,0.22);
         }
 
+        /* Badge dot for unread alerts */
+        .badge-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background-color: #E53935;
+            border-radius: 50%;
+            border: 1.5px solid #fff;
+        }
+
         /* Toast */
         .toast {
             position: fixed;
@@ -1257,7 +1269,10 @@
             <span>Timeline</span>
         </button>
         <button class="tab-item" onclick="switchPage('notices', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <div style="position: relative; display: inline-flex;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span id="alerts-badge" class="badge-dot" style="display: none;"></span>
+            </div>
             <span>Alerts</span>
         </button>
         <button class="tab-item" onclick="switchPage('files', this)">
@@ -1288,7 +1303,11 @@
 
             // Lazy load page-specific API data
             if (pageName === 'schedule') loadSchedule();
-            if (pageName === 'notices') loadAnnouncements();
+            if (pageName === 'notices') {
+                const badge = document.getElementById('alerts-badge');
+                if (badge) badge.style.display = 'none';
+                loadAnnouncements();
+            }
             if (pageName === 'files') loadResources();
         }
 
@@ -1868,6 +1887,40 @@
         }
         setInterval(checkForForceRefresh, 15000);
         checkForForceRefresh();
+
+        // ── Real-time New Announcements Toast Alert Poll ──
+        let lastAnnouncementId = null;
+        async function checkNewAnnouncements() {
+            try {
+                const res = await fetch(`${API_BASE}/announcements`);
+                if (!res.ok) return;
+                const data = await res.json();
+                const notices = data.announcements || data;
+                if (notices && notices.length > 0) {
+                    const latest = notices[0];
+                    if (lastAnnouncementId === null) {
+                        lastAnnouncementId = latest.id;
+                    } else if (lastAnnouncementId !== latest.id) {
+                        lastAnnouncementId = latest.id;
+                        showToast(`📢 New Alert: ${latest.title}`);
+                        
+                        const noticesPage = document.getElementById('noticesPage');
+                        if (noticesPage && noticesPage.classList.contains('active')) {
+                            // Dynamically reload notices list
+                            loadAnnouncements();
+                        } else {
+                            // Show unread badge dot if user is elsewhere
+                            const badge = document.getElementById('alerts-badge');
+                            if (badge) badge.style.display = 'block';
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Announcement poll error:", e);
+            }
+        }
+        setInterval(checkNewAnnouncements, 20000);
+        checkNewAnnouncements();
     </script>
 
     <!-- ═══════════════════════════════════════════════════
@@ -2051,9 +2104,9 @@
                 || window.navigator.standalone === true;
             if (isStandalone) return;
 
-            // Don't show again if user dismissed within last 3 days
-            const dismissedAt = localStorage.getItem('pwa_prompt_dismissed');
-            if (dismissedAt && (Date.now() - parseInt(dismissedAt)) < 3 * 24 * 60 * 60 * 1000) return;
+            // Temporary bypass of dismissal checks for testing / easy access
+            // const dismissedAt = localStorage.getItem('pwa_prompt_dismissed');
+            // if (dismissedAt && (Date.now() - parseInt(dismissedAt)) < 3 * 24 * 60 * 60 * 1000) return;
 
             const ua = navigator.userAgent;
             const isIOS = /iphone|ipad|ipod/i.test(ua);
