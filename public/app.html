@@ -345,30 +345,38 @@
         .conf-banner p { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
         /* Info grid */
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
         .info-card {
             background: var(--card);
             border: 1px solid var(--line);
-            border-radius: 22px;
-            padding: 19px 18px;
+            border-radius: 20px;
+            padding: 15px 14px;
             display: flex;
             align-items: center;
-            gap: 13px;
+            gap: 11px;
             box-shadow: var(--shadow-sm);
             cursor: pointer;
             transition: transform 0.15s;
         }
         .info-card:active { transform: scale(0.98); }
         .info-icon {
-            width: 44px; height: 44px;
+            width: 40px; height: 40px;
             background: var(--red-tint);
-            border-radius: 14px;
+            border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
         }
-        .info-icon svg { width: 20px; height: 20px; stroke: var(--primary); }
-        .info-text h4 { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 700; }
-        .info-text p { font-size: 14px; font-weight: 700; margin-top: 3px; }
+        .info-icon svg { width: 19px; height: 19px; stroke: var(--primary); }
+        .info-text { min-width: 0; }
+        .info-text h4 {
+            font-size: 9.5px; color: var(--muted); text-transform: uppercase;
+            letter-spacing: 0.3px; font-weight: 700; line-height: 1.2;
+            white-space: nowrap;
+        }
+        .info-text p {
+            font-size: 14px; font-weight: 700; margin-top: 3px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
 
         /* ============ DELEGATE PASS (modern) ============ */
         .badge-container { margin-bottom: 20px; perspective: 1200px; }
