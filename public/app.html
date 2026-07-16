@@ -1260,13 +1260,22 @@
                         <p>View Pass</p>
                     </div>
                 </div>
-                <div class="info-card souvenir-card" onclick="openSouvenir()" style="grid-column: span 2;">
+                <div class="info-card souvenir-card" id="souvenirCard" onclick="openSouvenir()" style="grid-column: span 2;">
                     <div class="info-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                     </div>
                     <div class="info-text">
                         <h4>Conference Souvenir</h4>
                         <p>📖 View Flipbook</p>
+                    </div>
+                </div>
+                <div class="info-card" onclick="openInstallGuide()" style="grid-column: span 2; background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%); border-color: rgba(33,150,243,0.3);">
+                    <div class="info-icon" style="background: rgba(33,150,243,0.12);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#1E88E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </div>
+                    <div class="info-text">
+                        <h4 style="color: #1E88E5; font-size: 10px;">📲 Install Guide</h4>
+                        <p style="color: #0D47A1;">Help others install PWA/APK</p>
                     </div>
                 </div>
             </div>
@@ -1289,6 +1298,75 @@
                     <div class="big-icon">📖</div>
                     <p>Loading souvenir...</p>
                 </div>
+            </div>
+        </section>
+
+        <!-- PAGE: Installation Guide -->
+        <section id="installPage" class="page" style="padding-bottom: 80px;">
+            <div class="flipbook-header">
+                <button class="flipbook-back-btn" onclick="goToHomeOrAuth()" aria-label="Go back">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <div class="flipbook-title">📲 Installation Guide</div>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="font-size: 13.5px; color: var(--muted); margin-bottom: 20px; line-height: 1.6;">Share these simple steps with fellow delegates to install the DYFI Wayanad app on their phones.</p>
+
+                <!-- Method Switcher -->
+                <div style="display: flex; gap: 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 16px; padding: 4px; margin-bottom: 20px;">
+                    <button onclick="switchGuide('guide-apk')" id="tab-guide-apk" style="flex: 1; padding: 10px 5px; border-radius: 11px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; background: var(--grad); color: #fff; font-family: inherit;">Android APK</button>
+                    <button onclick="switchGuide('guide-chrome')" id="tab-guide-chrome" style="flex: 1; padding: 10px 5px; border-radius: 11px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; background: transparent; color: var(--muted); font-family: inherit;">Chrome PWA</button>
+                    <button onclick="switchGuide('guide-safari')" id="tab-guide-safari" style="flex: 1; padding: 10px 5px; border-radius: 11px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; background: transparent; color: var(--muted); font-family: inherit;">Safari iOS</button>
+                </div>
+
+                <!-- APK Guide panel -->
+                <div id="guide-apk" class="guide-panel">
+                    <div style="padding: 16px; background: rgba(229,57,53,0.05); border: 1px solid rgba(229,57,53,0.15); border-radius: 14px; margin-bottom: 16px; font-size: 13px; color: var(--primary); font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                        <span>📱 Recommended for Android users</span>
+                    </div>
+                    <div class="notice-card" style="margin-bottom: 12px; padding: 14px 16px;">
+                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">1. Download the file</h4>
+                        <p style="font-size:12.5px; color:var(--muted);">Tap "Download App" on the main page to download the <strong>DYFIWayanad2026.apk</strong> file.</p>
+                    </div>
+                    <div class="notice-card" style="margin-bottom: 12px; padding: 14px 16px;">
+                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">2. Allow install</h4>
+                        <p style="font-size:12.5px; color:var(--muted);">If prompted by Chrome or Files, enable "Allow installation from unknown sources".</p>
+                    </div>
+                    <div class="notice-card" style="margin-bottom: 12px; padding: 14px 16px;">
+                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">3. Open &amp; Sign in</h4>
+                        <p style="font-size:12.5px; color:var(--muted);">Launch the installed application from your homescreen and log in using your phone/email.</p>
+                    </div>
+                </div>
+
+                <!-- Chrome Guide panel -->
+                <div id="guide-chrome" class="guide-panel" style="display:none;">
+                    <div class="notice-card" style="margin-bottom: 12px; padding: 14px 16px;">
+                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">1. Open Chrome browser</h4>
+                        <p style="font-size:12.5px; color:var(--muted);">Visit the delegate website URL in Google Chrome.</p>
+                    </div>
+                    <div class="notice-card" style="margin-bottom: 12px; padding: 14px 16px;">
+                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">2. Tap Install popup</h4>
+                        <p style="font-size:12.5px; color:var(--muted);">Click the bottom "Install" button overlay or tap Chrome's three-dot menu and select "Add to Home screen".</p>
+                    </div>
+                </div>
+
+                <!-- Safari Guide panel -->
+                <div id="guide-safari" class="guide-panel" style="display:none;">
+                    <div class="notice-card" style="margin-bottom: 12px; padding: 14px 16px;">
+                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">1. Tap the Share button</h4>
+                        <p style="font-size:12.5px; color:var(--muted);">Open the portal in Safari, then tap the Share icon (rectangle with arrow pointing up) at the bottom.</p>
+                    </div>
+                    <div class="notice-card" style="margin-bottom: 12px; padding: 14px 16px;">
+                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">2. Add to Home Screen</h4>
+                        <p style="font-size:12.5px; color:var(--muted);">Scroll down the share menu and select <strong>"Add to Home Screen"</strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proceed to login/registration form option -->
+            <div style="padding: 0 20px 40px; text-align: center;">
+                <button onclick="goToAuthFromGuide()" class="btn-submit" style="width: 100%; font-size: 14px; padding: 14px 20px; font-family: inherit; font-weight: 800; border-radius: 14px; background: var(--grad); color: white; border: none; cursor: pointer;">👉 Proceed to Login / Registration</button>
             </div>
         </section>
 
@@ -1445,12 +1523,57 @@
             if (pageName === 'files') loadResources();
         }
 
+        // ── Installation Guide JS ──
+        function openInstallGuide() {
+            switchPage('install');
+            switchGuide('guide-apk');
+        }
+
+        function switchGuide(id) {
+            document.querySelectorAll('.guide-panel').forEach(el => el.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+
+            const tabApk = document.getElementById('tab-guide-apk');
+            const tabChrome = document.getElementById('tab-guide-chrome');
+            const tabSafari = document.getElementById('tab-guide-safari');
+
+            [tabApk, tabChrome, tabSafari].forEach(t => {
+                if (t) {
+                    t.style.background = 'transparent';
+                    t.style.color = 'var(--muted)';
+                }
+            });
+
+            const activeTab = document.getElementById('tab-' + id);
+            if (activeTab) {
+                activeTab.style.background = 'var(--grad)';
+                activeTab.style.color = '#fff';
+            }
+        }
+
+        function goToHomeOrAuth() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                switchPage('dash');
+            } else {
+                switchPage('auth');
+            }
+        }
+
+        function goToAuthFromGuide() {
+            switchPage('auth');
+        }
+
         // ── Souvenir Flipbook ──
         let fbPages = [];
         let fbCurrentPage = 0;
         let fbTitle = 'Conference Souvenir';
 
         async function openSouvenir() {
+            if (!window.__souvenirUnlocked) {
+                showToast('🔒 Souvenir is locked by Admin.', true);
+                return;
+            }
             switchPage('souvenir');
             const content = document.getElementById('fbContent');
             content.innerHTML = `<div class="flipbook-empty"><div class="big-icon">📖</div><p>Loading souvenir...</p></div>`;
@@ -1754,6 +1877,24 @@
             const pad = n => String(n).padStart(2, '0');
 
             const render = () => {
+                // Check if admin has unlocked editing globally
+                const adminUnlockActive = window.__adminEditUnlockedUntil && (new Date(window.__adminEditUnlockedUntil).getTime() > Date.now());
+                
+                if (adminUnlockActive) {
+                    const remaining = new Date(window.__adminEditUnlockedUntil).getTime() - Date.now();
+                    const m = Math.floor(remaining / 60000);
+                    const s = Math.floor((remaining % 60000) / 1000);
+                    banner.className = 'edit-banner editable';
+                    banner.innerHTML =
+                        '<div class="eb-info">' +
+                        '<div class="eb-title">🔓 Unlocked by Admin</div>' +
+                        '<div class="eb-sub">Locks in <span class="eb-count">' + pad(m) + ':' + pad(s) + '</span></div>' +
+                        '</div>' +
+                        '<button class="eb-btn" onclick="enterEditMode()">Edit</button>';
+                    return;
+                }
+
+                // Fallback to normal 2-hour window logic
                 const remaining = deadline ? deadline - Date.now() : -1;
                 if (!deadline || remaining <= 0) {
                     banner.className = 'edit-banner locked';
@@ -1763,7 +1904,6 @@
                         '<div class="eb-sub">Your editing window has closed. Contact an admin to make changes.</div>' +
                         '</div>' +
                         '<button class="eb-btn ghost" onclick="viewDetails()">View</button>';
-                    if (__editTimer) { clearInterval(__editTimer); __editTimer = null; }
                     return;
                 }
                 const h = Math.floor(remaining / 3600000);
@@ -1810,7 +1950,8 @@
         function enterEditMode() {
             const part = JSON.parse(localStorage.getItem('participant') || '{}');
             const deadline = editDeadline(part);
-            if (deadline && deadline - Date.now() <= 0) {
+            const adminUnlockActive = window.__adminEditUnlockedUntil && (new Date(window.__adminEditUnlockedUntil).getTime() > Date.now());
+            if (!adminUnlockActive && deadline && deadline - Date.now() <= 0) {
                 showToast('Editing window has closed. Contact an admin.', true);
                 return;
             }
@@ -2090,6 +2231,10 @@
                 }
             } else {
                 logout();
+                window.__isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+                if (window.__isStandalone) {
+                    switchPage('install');
+                }
             }
         }
 
@@ -2134,6 +2279,14 @@
                 const res = await fetch(`${API_BASE}/event`);
                 if (!res.ok) return;
                 const event = await res.json();
+                
+                // Update global lock state variables
+                window.__adminEditUnlockedUntil = event.editUnlockedUntil || null;
+                window.__souvenirUnlocked = !!event.souvenirUnlocked;
+                
+                // Update Souvenir Card UI styling dynamically
+                updateSouvenirCardUI();
+
                 if (event.lastForceRefresh) {
                     if (!currentRefreshKey) {
                         localStorage.setItem('lastForceRefreshKey', event.lastForceRefresh);
@@ -2149,6 +2302,23 @@
         }
         setInterval(checkForForceRefresh, 15000);
         checkForForceRefresh();
+
+        function updateSouvenirCardUI() {
+            const card = document.getElementById('souvenirCard');
+            if (!card) return;
+            const text = card.querySelector('.info-text p');
+            if (window.__souvenirUnlocked) {
+                card.style.opacity = '1';
+                card.style.background = 'linear-gradient(135deg, #FFF8E8 0%, #FFF3D4 100%)';
+                card.style.borderColor = 'rgba(193,130,0,0.30)';
+                if (text) text.innerHTML = '📖 View Flipbook';
+            } else {
+                card.style.opacity = '0.75';
+                card.style.background = 'var(--soft)';
+                card.style.borderColor = 'var(--line)';
+                if (text) text.innerHTML = '🔒 Locked by Admin';
+            }
+        }
 
         // ── Real-time New Announcements Toast Alert Poll ──
         let lastAnnouncementId = null;
