@@ -416,6 +416,7 @@
             box-shadow: var(--shadow-red);
         }
         .eb-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+        .eb-btn.ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
         .edit-cancel {
             width: 100%; margin-top: 10px;
             background: var(--soft); color: var(--ink);
@@ -1479,7 +1480,8 @@
                         '<div class="eb-info">' +
                         '<div class="eb-title">🔒 Details locked</div>' +
                         '<div class="eb-sub">Your editing window has closed. Contact an admin to make changes.</div>' +
-                        '</div>';
+                        '</div>' +
+                        '<button class="eb-btn ghost" onclick="viewDetails()">View</button>';
                     if (__editTimer) { clearInterval(__editTimer); __editTimer = null; }
                     return;
                 }
@@ -1533,6 +1535,8 @@
             }
             prefillForm(part);
             window.__editMode = true;
+            document.getElementById('signUpForm').querySelectorAll('input, select, textarea').forEach(el => { el.disabled = false; });
+            document.getElementById('regSubmitBtn').style.display = '';
             document.getElementById('loginCard').style.display = 'none';
             document.getElementById('signUpCard').style.display = 'block';
             document.querySelector('#signUpCard .auth-header h2').innerText = 'Edit Credential';
@@ -1569,6 +1573,49 @@
         }
 
         function cancelEdit() { exitEditMode(); initPortal(); }
+
+        // Read-only view of the submitted credential (available any time, incl. after lock)
+        function viewDetails() {
+            const part = JSON.parse(localStorage.getItem('participant') || '{}');
+            prefillForm(part);
+            window.__editMode = false;
+            const form = document.getElementById('signUpForm');
+            document.getElementById('loginCard').style.display = 'none';
+            document.getElementById('signUpCard').style.display = 'block';
+            document.querySelector('#signUpCard .auth-header h2').innerText = 'Your Details';
+            document.querySelector('#signUpCard .auth-header p').innerText = 'Submitted credential — read only';
+            form.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = true; });
+            document.getElementById('regSubmitBtn').style.display = 'none';
+            const toggle = document.querySelector('#signUpCard .auth-toggle');
+            if (toggle) toggle.style.display = 'none';
+            const ec = document.getElementById('editCancelBtn'); if (ec) ec.style.display = 'none';
+            let close = document.getElementById('viewCloseBtn');
+            if (!close) {
+                close = document.createElement('button');
+                close.id = 'viewCloseBtn'; close.type = 'button'; close.className = 'edit-cancel';
+                close.innerText = 'Close'; close.onclick = closeView;
+                form.appendChild(close);
+            } else { close.style.display = 'block'; }
+            document.getElementById('tabBar').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('authPage').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function closeView() {
+            const form = document.getElementById('signUpForm');
+            form.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = false; });
+            document.getElementById('regSubmitBtn').style.display = '';
+            document.getElementById('regSubmitBtn').innerText = 'SUBMIT CREDENTIAL';
+            document.querySelector('#signUpCard .auth-header h2').innerText = 'Credential Form';
+            document.querySelector('#signUpCard .auth-header p').innerText = 'ഡി.വൈ.എഫ്.ഐ വയനാട് ജില്ലാ സമ്മേളനം — Delegate Credential';
+            const toggle = document.querySelector('#signUpCard .auth-toggle');
+            if (toggle) toggle.style.display = '';
+            const close = document.getElementById('viewCloseBtn'); if (close) close.style.display = 'none';
+            form.reset();
+            initPortal();
+        }
 
         // Session helpers
         function saveSession(token, participant) {
