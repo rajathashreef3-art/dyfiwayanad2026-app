@@ -378,6 +378,50 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
+        /* Edit window banner + countdown */
+        .edit-banner {
+            border-radius: 20px;
+            padding: 15px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            border: 1px solid var(--line);
+            background: var(--card);
+            box-shadow: var(--shadow-sm);
+        }
+        .edit-banner.editable {
+            background: linear-gradient(180deg, #FFF7E6 0%, #FFFFFF 100%);
+            border-color: rgba(217,138,0,0.30);
+        }
+        .edit-banner.locked { background: var(--soft); box-shadow: none; }
+        .eb-info { min-width: 0; }
+        .eb-title { font-size: 13.5px; font-weight: 800; letter-spacing: -0.2px; }
+        .eb-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+        .eb-count { font-variant-numeric: tabular-nums; font-weight: 800; color: #B26A00; }
+        .eb-btn {
+            flex-shrink: 0;
+            border: none;
+            background: var(--grad);
+            color: #fff;
+            font-family: inherit;
+            font-weight: 800;
+            font-size: 12.5px;
+            padding: 11px 20px;
+            border-radius: 999px;
+            cursor: pointer;
+            box-shadow: var(--shadow-red);
+        }
+        .eb-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+        .edit-cancel {
+            width: 100%; margin-top: 10px;
+            background: var(--soft); color: var(--ink);
+            border: 1px solid var(--line);
+            padding: 14px; border-radius: 14px;
+            font-family: inherit; font-weight: 700; font-size: 13px; cursor: pointer;
+        }
+
         /* ============ DELEGATE PASS (modern) ============ */
         .badge-container { margin-bottom: 20px; perspective: 1200px; }
 
@@ -1061,6 +1105,8 @@
                 </div>
             </div>
 
+            <div id="editBanner" class="edit-banner" style="display:none;"></div>
+
             <div class="conf-banner">
                 <h3>16th District Committee Conference</h3>
                 <p>
@@ -1331,18 +1377,37 @@
             };
 
             try {
-                const res = await fetch(`${API_BASE}/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, phone, questionnaire })
-                });
-
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.message || "Registration failed");
-
-                saveSession(data.token, data.participant);
-                showToast("Credential submitted!");
-                initPortal();
+                if (window.__editMode) {
+                    // Update existing profile (server enforces the 2-hour window)
+                    const part = JSON.parse(localStorage.getItem('participant') || '{}');
+                    const token = localStorage.getItem('token');
+                    const res = await fetch(`${API_BASE}/participant/${part.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify({ name, phone, questionnaire })
+                    });
+                    const data = await res.json();
+                    if (res.status === 423) {
+                        showToast(data.message || 'Editing window has closed.', true);
+                        exitEditMode(); initPortal(); return;
+                    }
+                    if (!res.ok) throw new Error(data.message || "Update failed");
+                    localStorage.setItem('participant', JSON.stringify(data.participant));
+                    showToast("Details updated!");
+                    exitEditMode();
+                    initPortal();
+                } else {
+                    const res = await fetch(`${API_BASE}/register`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, email, phone, questionnaire })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.message || "Registration failed");
+                    saveSession(data.token, data.participant);
+                    showToast("Credential submitted!");
+                    initPortal();
+                }
             } catch (err) {
                 showToast(err.message, true);
             } finally {
@@ -1381,6 +1446,123 @@
                 submitBtn.innerHTML = originalText;
             }
         }
+
+        // ===== Self-edit window (2 hours after registration) =====
+        const EDIT_WINDOW_MS = 2 * 60 * 60 * 1000;
+        let __editTimer = null;
+
+        function editDeadline(part) {
+            const reg = part && part.registrationDate ? new Date(part.registrationDate) : null;
+            if (!reg || isNaN(reg.getTime())) return null;
+            return reg.getTime() + EDIT_WINDOW_MS;
+        }
+
+        function setupEditWindow(part) {
+            const banner = document.getElementById('editBanner');
+            if (!banner) return;
+            if (__editTimer) { clearInterval(__editTimer); __editTimer = null; }
+            const deadline = editDeadline(part);
+            banner.style.display = 'flex';
+            const pad = n => String(n).padStart(2, '0');
+
+            const render = () => {
+                const remaining = deadline ? deadline - Date.now() : -1;
+                if (!deadline || remaining <= 0) {
+                    banner.className = 'edit-banner locked';
+                    banner.innerHTML =
+                        '<div class="eb-info">' +
+                        '<div class="eb-title">🔒 Details locked</div>' +
+                        '<div class="eb-sub">Your editing window has closed. Contact an admin to make changes.</div>' +
+                        '</div>';
+                    if (__editTimer) { clearInterval(__editTimer); __editTimer = null; }
+                    return;
+                }
+                const h = Math.floor(remaining / 3600000);
+                const m = Math.floor((remaining % 3600000) / 60000);
+                const s = Math.floor((remaining % 60000) / 1000);
+                banner.className = 'edit-banner editable';
+                banner.innerHTML =
+                    '<div class="eb-info">' +
+                    '<div class="eb-title">Edit your details</div>' +
+                    '<div class="eb-sub">Locks in <span class="eb-count">' + pad(h) + ':' + pad(m) + ':' + pad(s) + '</span></div>' +
+                    '</div>' +
+                    '<button class="eb-btn" onclick="enterEditMode()">Edit</button>';
+            };
+            render();
+            __editTimer = setInterval(render, 1000);
+        }
+
+        function prefillForm(part) {
+            const q = part.questionnaire || {};
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = (v == null ? '' : v); };
+            set('regName', part.name); set('regEmail', part.email); set('regPhone', part.phone);
+            set('regAddress', q.address); set('regAge', q.age); set('regEducation', q.education);
+            set('regOccupation', q.occupation); set('regChildren', q.children); set('regBloodGroup', q.bloodGroup);
+            set('regCategory', q.category); set('regYearJoined', q.yearJoined); set('regTimesAttended', q.timesAttended);
+            set('regWorkingBody', q.workingBody); set('regUnit', q.unit); set('regPartyMember', q.partyMember);
+            set('regPartyPosition', q.partyPosition); set('regMassOrg', q.massOrg); set('regMassOrgPosition', q.massOrgPosition);
+            set('regNewspaper', q.newspaper); set('regMagazine', q.magazine); set('regLibraryClub', q.libraryClub);
+            set('regYuvadhara', q.yuvadhara); set('regWriter', q.favouriteWriter); set('regHobby', q.favouriteHobby);
+            set('regWorldCup', q.worldCupPick); set('regCriminalCases', q.criminalCases); set('regImprisoned', q.imprisoned);
+            set('regAssault', q.assault); set('regEmployment', q.employmentExchange); set('regPSC', q.pscRankList);
+            set('regReason', q.reasonJoined); set('regExperience', q.unforgettable);
+            const setRadio = (name, v) => { const el = document.querySelector('input[name="' + name + '"][value="' + v + '"]'); if (el) el.checked = true; };
+            if (q.married) setRadio('regMarried', q.married);
+            const sm = q.socialMember || 'No';
+            setRadio('regSocialMember', sm);
+            toggleSocials(sm === 'Yes');
+            const plats = q.socialPlatforms || [];
+            document.getElementById('regSocInsta').checked = plats.includes('Instagram');
+            document.getElementById('regSocThreads').checked = plats.includes('Threads');
+            document.getElementById('regSocFacebook').checked = plats.includes('Facebook');
+            document.getElementById('regSocTwitter').checked = plats.includes('Twitter');
+        }
+
+        function enterEditMode() {
+            const part = JSON.parse(localStorage.getItem('participant') || '{}');
+            const deadline = editDeadline(part);
+            if (deadline && deadline - Date.now() <= 0) {
+                showToast('Editing window has closed. Contact an admin.', true);
+                return;
+            }
+            prefillForm(part);
+            window.__editMode = true;
+            document.getElementById('loginCard').style.display = 'none';
+            document.getElementById('signUpCard').style.display = 'block';
+            document.querySelector('#signUpCard .auth-header h2').innerText = 'Edit Credential';
+            document.querySelector('#signUpCard .auth-header p').innerText = 'Update your details — locks 2 hours after registration';
+            document.getElementById('regSubmitBtn').innerText = 'SAVE CHANGES';
+            document.getElementById('regEmail').disabled = true;
+            const toggle = document.querySelector('#signUpCard .auth-toggle');
+            if (toggle) toggle.style.display = 'none';
+            let cancel = document.getElementById('editCancelBtn');
+            if (!cancel) {
+                cancel = document.createElement('button');
+                cancel.id = 'editCancelBtn'; cancel.type = 'button'; cancel.className = 'edit-cancel';
+                cancel.innerText = 'Cancel'; cancel.onclick = cancelEdit;
+                document.getElementById('signUpForm').appendChild(cancel);
+            } else { cancel.style.display = 'block'; }
+            document.getElementById('tabBar').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('authPage').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function exitEditMode() {
+            window.__editMode = false;
+            document.querySelector('#signUpCard .auth-header h2').innerText = 'Credential Form';
+            document.querySelector('#signUpCard .auth-header p').innerText = 'ഡി.വൈ.എഫ്.ഐ വയനാട് ജില്ലാ സമ്മേളനം — Delegate Credential';
+            document.getElementById('regSubmitBtn').innerText = 'SUBMIT CREDENTIAL';
+            document.getElementById('regEmail').disabled = false;
+            const toggle = document.querySelector('#signUpCard .auth-toggle');
+            if (toggle) toggle.style.display = '';
+            const cancel = document.getElementById('editCancelBtn');
+            if (cancel) cancel.style.display = 'none';
+            document.getElementById('signUpForm').reset();
+        }
+
+        function cancelEdit() { exitEditMode(); initPortal(); }
 
         // Session helpers
         function saveSession(token, participant) {
@@ -1561,6 +1743,9 @@
                     // Show dashboard page
                     document.getElementById('authPage').classList.remove('active');
                     document.getElementById('dashPage').classList.add('active');
+
+                    // Start the 2-hour self-edit countdown / lock state
+                    setupEditWindow(verifiedPart);
                 } catch (err) {
                     console.error("Verification failed:", err);
                     logout();

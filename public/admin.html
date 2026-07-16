@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>DYFI Wayanad 2026 — Admin Verify</title>
+    <meta name="theme-color" content="#F4F3F6">
+    <link rel="icon" type="image/png" href="/assets/app-icon-192.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #B91C27; --primary-2: #8C1019;
+            --grad: linear-gradient(180deg, #641020 0%, #3F0813 55%, #16060A 100%);
+            --bg: #F4F3F6; --card: #FFFFFF; --ink: #1C1A1F; --muted: #85818D;
+            --line: rgba(28,26,31,0.08); --soft: #F3F2F5;
+            --green-bg: #E4F7ED; --green: #0E7A43;
+            --amber-bg: #FDF1E0; --amber: #B26A00;
+            --red-bg: #FBE9EB; --red: #B91C27;
+            --shadow: 0 1px 2px rgba(28,18,26,0.04), 0 8px 24px rgba(28,18,26,0.06);
+            --shadow-sm: 0 1px 2px rgba(28,18,26,0.03), 0 4px 12px rgba(28,18,26,0.04);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink);
+            min-height: 100vh; -webkit-font-smoothing: antialiased;
+            padding: 20px 16px 40px; display: flex; flex-direction: column; align-items: center;
+        }
+        .wrap { width: 100%; max-width: 460px; }
+        header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+        .brand { display: flex; align-items: center; gap: 11px; }
+        .brand img { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+        .brand h1 { font-size: 15px; font-weight: 800; }
+        .brand p { font-size: 10.5px; color: var(--muted); font-weight: 600; }
+        .logout { background: #fff; border: 1px solid var(--line); border-radius: 30px; padding: 8px 14px;
+            font-size: 11px; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-sm); display: none; }
+        .card { background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 26px 22px; box-shadow: var(--shadow); }
+        .card h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; text-align: center; }
+        .card .sub { font-size: 13px; color: var(--muted); text-align: center; margin: 6px 0 22px; }
+        label { display: block; font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 8px; }
+        .fg { margin-bottom: 16px; }
+        input { width: 100%; background: var(--soft); border: 1.5px solid transparent; padding: 15px 16px;
+            border-radius: 14px; color: var(--ink); font-family: inherit; font-size: 14.5px; transition: all .2s; }
+        input:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(185,28,39,0.12); }
+        .btn { width: 100%; background: var(--grad); color: #fff; border: none; padding: 16px; border-radius: 16px;
+            font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 2px 8px rgba(45,6,14,0.20); margin-top: 6px; }
+        .btn:disabled { opacity: .6; cursor: not-allowed; }
+        .btn.ghost { background: #fff; color: var(--ink); border: 1.5px solid var(--line); box-shadow: var(--shadow-sm); }
+        #reader { width: 100%; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: #000; margin-bottom: 14px; }
+        #reader video { display: block; width: 100% !important; }
+        .scan-hint { font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 14px; }
+        .divider { display: flex; align-items: center; gap: 10px; margin: 18px 0; color: var(--muted); font-size: 11px; font-weight: 700; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+        .result { border-radius: 20px; padding: 22px; margin-top: 16px; border: 1px solid var(--line); animation: pop .3s ease; }
+        @keyframes pop { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
+        .result.ok { background: var(--green-bg); border-color: rgba(14,122,67,0.25); }
+        .result.warn { background: var(--amber-bg); border-color: rgba(178,106,0,0.28); }
+        .result.bad { background: var(--red-bg); border-color: rgba(185,28,39,0.28); }
+        .r-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 800; letter-spacing: .5px;
+            text-transform: uppercase; padding: 6px 12px; border-radius: 30px; margin-bottom: 14px; }
+        .result.ok .r-badge { background: #fff; color: var(--green); }
+        .result.warn .r-badge { background: #fff; color: var(--amber); }
+        .result.bad .r-badge { background: #fff; color: var(--red); }
+        .r-name { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; }
+        .r-rows { margin-top: 14px; display: grid; gap: 9px; }
+        .r-row { display: flex; justify-content: space-between; gap: 12px; font-size: 13.5px; }
+        .r-row .k { color: var(--muted); font-weight: 600; }
+        .r-row .v { font-weight: 700; text-align: right; }
+        .r-note { font-size: 12.5px; margin-top: 14px; font-weight: 600; }
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: var(--ink); color: #fff; padding: 12px 22px; border-radius: 14px; font-size: 13px; font-weight: 700;
+            opacity: 0; pointer-events: none; transition: all .3s; z-index: 100; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .loader { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.35); border-radius: 50%; border-top-color: #fff; animation: spin .8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <header>
+            <div class="brand">
+                <img src="/assets/app-icon-192.png" alt="DYFI">
+                <div>
+                    <h1>Admin Verify</h1>
+                    <p>DYFI Wayanad District Conference</p>
+                </div>
+            </div>
+            <button class="logout" id="logoutBtn" onclick="adminLogout()">Logout</button>
+        </header>
+
+        <!-- Login -->
+        <div class="card" id="loginCard">
+            <h2>Admin Sign In</h2>
+            <p class="sub">Scan and verify delegate passes at the gate.</p>
+            <form id="loginForm" onsubmit="doLogin(event)">
+                <div class="fg">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" autocomplete="username" required>
+                </div>
+                <div class="fg">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" autocomplete="current-password" required>
+                </div>
+                <button type="submit" class="btn" id="loginBtn">SIGN IN</button>
+            </form>
+        </div>
+
+        <!-- Scanner -->
+        <div class="card" id="scanCard" style="display:none;">
+            <h2>Scan Delegate Pass</h2>
+            <p class="sub">Point the camera at the delegate's QR code.</p>
+            <div id="reader"></div>
+            <div class="scan-hint" id="scanHint">Requesting camera…</div>
+            <button class="btn ghost" id="rescanBtn" onclick="resumeScan()" style="display:none;">Scan Next Delegate</button>
+
+            <div class="divider">OR ENTER ID MANUALLY</div>
+            <form id="manualForm" onsubmit="doManual(event)">
+                <div class="fg">
+                    <input type="text" id="manualId" placeholder="Delegate ID from the pass">
+                </div>
+                <button type="submit" class="btn ghost">Verify ID</button>
+            </form>
+
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const API_BASE = "https://dyfiwayanad2026-backend.onrender.com/api";
+        let scanner = null;
+        let busy = false;
+
+        function showToast(msg, isErr) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.background = isErr ? 'rgba(185,28,39,0.96)' : 'rgba(14,122,67,0.96)';
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        function token() { return localStorage.getItem('adminToken'); }
+
+        async function doLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const orig = btn.innerHTML; btn.disabled = true; btn.innerHTML = '<span class="loader"></span>';
+            try {
+                const res = await fetch(`${API_BASE}/admin/login`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value.trim(),
+                        password: document.getElementById('password').value
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Login failed');
+                localStorage.setItem('adminToken', data.token);
+                localStorage.setItem('adminName', data.admin.username);
+                enterConsole();
+            } catch (err) {
+                showToast(err.message, true);
+            } finally {
+                btn.disabled = false; btn.innerHTML = orig;
+            }
+        }
+
+        function enterConsole() {
+            document.getElementById('loginCard').style.display = 'none';
+            document.getElementById('scanCard').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'block';
+            startScanner();
+        }
+
+        function adminLogout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminName');
+            if (scanner) { scanner.stop().catch(()=>{}); scanner = null; }
+            location.reload();
+        }
+
+        function startScanner() {
+            if (typeof Html5Qrcode === 'undefined') {
+                document.getElementById('scanHint').innerText = 'Camera library unavailable — use manual ID entry.';
+                return;
+            }
+            scanner = new Html5Qrcode('reader');
+            scanner.start(
+                { facingMode: 'environment' },
+                { fps: 10, qrbox: { width: 230, height: 230 } },
+                onScan,
+                () => {}
+            ).then(() => {
+                document.getElementById('scanHint').innerText = 'Camera ready — hold the QR steady in frame.';
+            }).catch(err => {
+                document.getElementById('scanHint').innerText = 'Camera blocked. Allow camera access, or use manual ID entry.';
+            });
+        }
+
+        function pauseScan() { if (scanner) { try { scanner.pause(true); } catch (_) {} } }
+        function resumeScan() {
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('rescanBtn').style.display = 'none';
+            busy = false;
+            if (scanner) { try { scanner.resume(); } catch (_) { startScanner(); } }
+        }
+
+        function onScan(decodedText) {
+            if (busy) return;
+            busy = true;
+            pauseScan();
+            verify({ payload: decodedText });
+        }
+
+        async function doManual(e) {
+            e.preventDefault();
+            const id = document.getElementById('manualId').value.trim();
+            if (!id) return;
+            verify({ id });
+        }
+
+        async function verify(body) {
+            const box = document.getElementById('result');
+            box.innerHTML = '<div class="result"><span class="loader" style="border-top-color:#B91C27;border-color:rgba(185,28,39,.25);border-top-color:#B91C27"></span> Verifying…</div>';
+            try {
+                const res = await fetch(`${API_BASE}/admin/verify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token()}` },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+
+                if (res.status === 401) { showToast('Session expired. Sign in again.', true); adminLogout(); return; }
+
+                if (!data.verified) {
+                    box.innerHTML =
+                        '<div class="result bad">' +
+                        '<span class="r-badge">✕ Not Verified</span>' +
+                        '<div class="r-name">Entry Denied</div>' +
+                        '<div class="r-note">' + (data.message || 'This code does not match any registered delegate.') + '</div>' +
+                        '</div>';
+                } else {
+                    const p = data.participant;
+                    const cls = data.alreadyCheckedIn ? 'warn' : 'ok';
+                    const badge = data.alreadyCheckedIn ? '⚠ Already Checked In' : '✓ Verified & Checked In';
+                    let note = '';
+                    if (data.alreadyCheckedIn && data.checkedInAt) {
+                        note = '<div class="r-note">First checked in at ' + new Date(data.checkedInAt).toLocaleString() + (data.checkedInBy ? ' by ' + data.checkedInBy : '') + '.</div>';
+                    } else {
+                        note = '<div class="r-note">Checked in just now.</div>';
+                    }
+                    box.innerHTML =
+                        '<div class="result ' + cls + '">' +
+                        '<span class="r-badge">' + badge + '</span>' +
+                        '<div class="r-name">' + esc(p.name) + '</div>' +
+                        '<div class="r-rows">' +
+                        row('Block / Unit', p.unit) +
+                        row('Position', p.workingBody) +
+                        row('Phone', p.phone) +
+                        row('Blood Group', p.bloodGroup) +
+                        '</div>' + note +
+                        '</div>';
+                }
+            } catch (err) {
+                box.innerHTML = '<div class="result bad"><span class="r-badge">✕ Error</span><div class="r-note">' + esc(err.message) + '</div></div>';
+            } finally {
+                document.getElementById('rescanBtn').style.display = 'block';
+                document.getElementById('manualId').value = '';
+            }
+        }
+
+        function row(k, v) {
+            if (!v) return '';
+            return '<div class="r-row"><span class="k">' + k + '</span><span class="v">' + esc(v) + '</span></div>';
+        }
+        function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+
+        // Auto-enter console if already signed in
+        window.addEventListener('DOMContentLoaded', () => {
+            if (token()) enterConsole();
+        });
+    </script>
+</body>
+</html>
