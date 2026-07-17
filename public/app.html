@@ -1312,39 +1312,26 @@
 
                 <!-- Method Switcher -->
                 <div style="display: flex; gap: 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 16px; padding: 4px; margin-bottom: 20px;">
-                    <button onclick="switchGuide('guide-apk')" id="tab-guide-apk" style="flex: 1; padding: 10px 5px; border-radius: 11px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; background: var(--grad); color: #fff; font-family: inherit;">Android APK</button>
-                    <button onclick="switchGuide('guide-chrome')" id="tab-guide-chrome" style="flex: 1; padding: 10px 5px; border-radius: 11px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; background: transparent; color: var(--muted); font-family: inherit;">Chrome PWA</button>
+                    <button onclick="switchGuide('guide-chrome')" id="tab-guide-chrome" style="flex: 1; padding: 10px 5px; border-radius: 11px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; background: var(--grad); color: #fff; font-family: inherit;">Android</button>
                     <button onclick="switchGuide('guide-safari')" id="tab-guide-safari" style="flex: 1; padding: 10px 5px; border-radius: 11px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; background: transparent; color: var(--muted); font-family: inherit;">Safari iOS</button>
                 </div>
 
-                <!-- APK Guide panel -->
-                <div id="guide-apk" class="guide-panel">
+                <!-- Android Guide panel -->
+                <div id="guide-chrome" class="guide-panel">
                     <div style="padding: 16px; background: rgba(229,57,53,0.05); border: 1px solid rgba(229,57,53,0.15); border-radius: 14px; margin-bottom: 16px; font-size: 13px; color: var(--primary); font-weight: 700; display: flex; align-items: center; gap: 8px;">
                         <span>📱 Recommended for Android users</span>
                     </div>
                     <div class="notice-card" style="margin-bottom: 12px; padding: 14px 16px;">
-                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">1. Download the file</h4>
-                        <p style="font-size:12.5px; color:var(--muted);">Tap "Download App" on the main page to download the <strong>DYFIWayanad2026.apk</strong> file.</p>
+                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">1. Open in Chrome</h4>
+                        <p style="font-size:12.5px; color:var(--muted);">Visit the delegate website URL in Google Chrome on your Android phone.</p>
                     </div>
                     <div class="notice-card" style="margin-bottom: 12px; padding: 14px 16px;">
-                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">2. Allow install</h4>
-                        <p style="font-size:12.5px; color:var(--muted);">If prompted by Chrome or Files, enable "Allow installation from unknown sources".</p>
+                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">2. Install the app</h4>
+                        <p style="font-size:12.5px; color:var(--muted);">Tap the "Install" button that appears, or open Chrome's three-dot menu and choose "Add to Home screen".</p>
                     </div>
                     <div class="notice-card" style="margin-bottom: 12px; padding: 14px 16px;">
                         <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">3. Open &amp; Sign in</h4>
-                        <p style="font-size:12.5px; color:var(--muted);">Launch the installed application from your homescreen and log in using your phone/email.</p>
-                    </div>
-                </div>
-
-                <!-- Chrome Guide panel -->
-                <div id="guide-chrome" class="guide-panel" style="display:none;">
-                    <div class="notice-card" style="margin-bottom: 12px; padding: 14px 16px;">
-                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">1. Open Chrome browser</h4>
-                        <p style="font-size:12.5px; color:var(--muted);">Visit the delegate website URL in Google Chrome.</p>
-                    </div>
-                    <div class="notice-card" style="margin-bottom: 12px; padding: 14px 16px;">
-                        <h4 style="font-size:14px; font-weight:700; margin-bottom:4px;">2. Tap Install popup</h4>
-                        <p style="font-size:12.5px; color:var(--muted);">Click the bottom "Install" button overlay or tap Chrome's three-dot menu and select "Add to Home screen".</p>
+                        <p style="font-size:12.5px; color:var(--muted);">Launch the app from your home screen and log in using your phone/email.</p>
                     </div>
                 </div>
 
@@ -1515,18 +1502,17 @@
         // ── Installation Guide JS ──
         function openInstallGuide() {
             switchPage('install');
-            switchGuide('guide-apk');
+            switchGuide('guide-chrome');
         }
 
         function switchGuide(id) {
             document.querySelectorAll('.guide-panel').forEach(el => el.style.display = 'none');
             document.getElementById(id).style.display = 'block';
 
-            const tabApk = document.getElementById('tab-guide-apk');
             const tabChrome = document.getElementById('tab-guide-chrome');
             const tabSafari = document.getElementById('tab-guide-safari');
 
-            [tabApk, tabChrome, tabSafari].forEach(t => {
+            [tabChrome, tabSafari].forEach(t => {
                 if (t) {
                     t.style.background = 'transparent';
                     t.style.color = 'var(--muted)';
