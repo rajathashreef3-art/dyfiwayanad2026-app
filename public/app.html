@@ -544,47 +544,26 @@
 
         .pass-top {
             background: var(--card);
-            padding: 20px 22px 22px;
+            padding: 22px 22px 24px;
             color: var(--ink);
             position: relative;
             overflow: hidden;
+            text-align: center;
         }
         .pass-top::after {
             content: '★';
             position: absolute; right: -18px; top: -30px;
             font-size: 140px; color: rgba(100,16,32,0.05); line-height: 1;
         }
-        .pass-top-row { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1; }
-        .pass-brand-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); font-weight: 800; }
-        .pass-brand-title { font-size: 17px; font-weight: 800; margin-top: 4px; letter-spacing: -0.3px; line-height: 1.15; max-width: 200px; }
-        .pass-status {
-            background: var(--green-bg);
-            border: 1px solid rgba(18,164,90,0.25);
-            color: #0E7A43;
-            padding: 6px 13px;
-            border-radius: 30px;
-            font-size: 10.5px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            display: inline-flex; align-items: center; gap: 6px;
-            white-space: nowrap;
-        }
-        .pass-status .dot { width: 6px; height: 6px; border-radius: 50%; background: #12A45A; }
+        .pass-brand-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); font-weight: 800; position: relative; z-index: 1; }
+        .pass-brand-title { font-size: 17px; font-weight: 800; margin-top: 4px; letter-spacing: -0.3px; line-height: 1.15; position: relative; z-index: 1; }
 
-        .pass-idrow {
-            display: flex; align-items: center; gap: 12px;
-            margin-top: 16px; position: relative; z-index: 1;
+        .pass-idrow { margin-top: 16px; position: relative; z-index: 1; }
+        .pass-name { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.15; color: var(--primary); }
+        .pass-id {
+            font-size: 12.5px; font-weight: 700; color: var(--muted);
+            letter-spacing: 1.2px; margin-top: 5px; font-variant-numeric: tabular-nums;
         }
-        .pass-avatar {
-            width: 50px; height: 50px; border-radius: 15px;
-            background: var(--soft);
-            border: 1px solid var(--line);
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
-        .pass-avatar svg { width: 22px; height: 22px; stroke: var(--muted); }
-        .pass-name { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.1; color: var(--ink); }
-        .pass-role { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
 
         /* perforation divider */
         .pass-perf {
@@ -1089,7 +1068,21 @@
                     </div>
                     <div class="form-group">
                         <label for="regUnit">ബ്ലോക്ക് / Block</label>
-                        <input type="text" id="regUnit" class="form-control" placeholder="Block / Unit name" required>
+                        <select id="regUnit" class="form-control">
+                            <option value="">Select (optional)</option>
+                            <option value="വൈത്തിരി">വൈത്തിരി</option>
+                            <option value="കൽപ്പറ്റ">കൽപ്പറ്റ</option>
+                            <option value="കോട്ടത്തറ">കോട്ടത്തറ</option>
+                            <option value="ബത്തേരി">ബത്തേരി</option>
+                            <option value="പുൽപ്പള്ളി">പുൽപ്പള്ളി</option>
+                            <option value="മീനങ്ങാടി">മീനങ്ങാടി</option>
+                            <option value="മാനന്തവാടി">മാനന്തവാടി</option>
+                            <option value="പനമരം">പനമരം</option>
+                            <option value="നീലഗിരി">നീലഗിരി</option>
+                            <option value="പ്രൊഫഷണൽ">പ്രൊഫഷണൽ</option>
+                            <option value="ലോ സബ് കമ്മിറ്റി">ലോ സബ് കമ്മിറ്റി</option>
+                            <option value="ജില്ലാ കമ്മറ്റി">ജില്ലാ കമ്മറ്റി</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="regPartyMember">രാഷ്ട്രീയ പാർട്ടിയിൽ അംഗമാണോ? / Political Party Member</label>
@@ -1375,19 +1368,11 @@
             <div class="badge-container">
                 <div class="pass">
                     <div class="pass-top">
-                        <div class="pass-top-row">
-                            <div>
-                                <div class="pass-brand-label">Delegate Pass</div>
-                                <div class="pass-brand-title">DYFI Wayanad District Conference</div>
-                            </div>
-                            <span class="pass-status"><span class="dot"></span> VERIFIED</span>
-                        </div>
+                        <div class="pass-brand-label">Delegate Pass</div>
+                        <div class="pass-brand-title">DYFI Wayanad District Conference</div>
                         <div class="pass-idrow">
-                            <div class="pass-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-                            <div>
-                                <div class="pass-name" id="badgeName">Comrade Name</div>
-                                <div class="pass-role" id="badgePosition">Delegate</div>
-                            </div>
+                            <div class="pass-name" id="badgeName">Comrade Name</div>
+                            <div class="pass-id" id="badgeId">—</div>
                         </div>
                     </div>
 
@@ -1418,8 +1403,8 @@
                                 <div class="v" id="badgeYear">—</div>
                             </div>
                             <div class="pass-cell">
-                                <div class="k">Delegate ID</div>
-                                <div class="v" id="badgeId" style="font-size:12px;letter-spacing:0.3px;word-break:break-all;">—</div>
+                                <div class="k">Position</div>
+                                <div class="v" id="badgePosition">—</div>
                             </div>
                         </div>
 
@@ -1727,6 +1712,14 @@
         function readRadio(name) {
             const el = document.querySelector(`input[name="${name}"]:checked`);
             return el ? el.value : "";
+        }
+
+        // Format the raw Firestore id as a readable delegate number:
+        // DYFI-26-XXX-XXX (last 6 chars, uppercased). QR still carries the raw id.
+        function fmtDelegateId(id) {
+            if (!id) return '—';
+            const six = String(id).replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(-6).padStart(6, '0');
+            return `DYFI-26-${six.slice(0, 3)}-${six.slice(3)}`;
         }
 
         // Handle Registration
@@ -2208,7 +2201,7 @@
                     document.getElementById('badgePhone').innerText = verifiedPart.phone || '';
                     document.getElementById('badgeBlood').innerText = q.bloodGroup || '—';
                     document.getElementById('badgeYear').innerText = q.yearJoined ? `Since ${q.yearJoined}` : '';
-                    document.getElementById('badgeId').innerText = verifiedPart.id || '—';
+                    document.getElementById('badgeId').innerText = fmtDelegateId(verifiedPart.id);
                     document.getElementById('badgeQrImg').src = verifiedPart.qrCode;
 
                     // Save verified data to cache
