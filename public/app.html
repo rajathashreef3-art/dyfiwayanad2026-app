@@ -1282,7 +1282,7 @@
         <!-- PAGE: Souvenir Flipbook Viewer -->
         <section id="souvenirPage" class="page">
             <div class="flipbook-header">
-                <button class="flipbook-back-btn" onclick="switchPage('dash')" aria-label="Go back">
+                <button class="flipbook-back-btn" onclick="closeSouvenir()" aria-label="Go back">
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                 </button>
                 <div class="flipbook-title" id="souvenirTitle">Conference Souvenir</div>
@@ -1544,12 +1544,21 @@
         let fbCurrentPage = 0;
         let fbTitle = 'Conference Souvenir';
 
+        function closeSouvenir() {
+            const tb = document.getElementById('tabBar');
+            if (tb) tb.style.display = 'flex';
+            switchPage('dash');
+        }
+
         async function openSouvenir() {
             if (!window.__souvenirUnlocked) {
                 showToast('🔒 Souvenir is locked by Admin.', true);
                 return;
             }
             switchPage('souvenir');
+            // Full-screen reading — hide the floating tab bar while viewing
+            const tb = document.getElementById('tabBar');
+            if (tb) tb.style.display = 'none';
             const content = document.getElementById('fbContent');
             content.innerHTML = `<div class="flipbook-empty"><div class="big-icon">📖</div><p>Loading souvenir...</p></div>`;
             try {
