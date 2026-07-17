@@ -45,14 +45,15 @@
         .hero { text-align: center; margin-bottom: 36px; }
 
         .logo-ring {
-            width: 90px; height: 90px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #FF6F60);
+            width: 96px; height: 96px; border-radius: 26px;
+            background: #fff;
             display: flex; align-items: center; justify-content: center;
-            font-size: 42px;
+            overflow: hidden;
             box-shadow: 0 0 40px var(--primary-glow), 0 0 80px rgba(229,57,53,0.15);
             animation: pulse-glow 2.5s ease-in-out infinite;
             margin: 0 auto 22px;
         }
+        .logo-ring img { width: 100%; height: 100%; object-fit: cover; }
 
         @keyframes pulse-glow {
             0%,100% { box-shadow: 0 0 40px var(--primary-glow), 0 0 80px rgba(229,57,53,0.15); }
@@ -99,8 +100,6 @@
 
         .tab-btn .tab-icon { font-size: 20px; }
         .tab-btn.active { color: white; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-
-        .tab-btn.t-apk.active    { background: linear-gradient(135deg,rgba(229,57,53,0.3),rgba(229,57,53,0.1)); color:#FF8A80; }
         .tab-btn.t-chrome.active { background: linear-gradient(135deg,rgba(16,185,129,0.25),rgba(16,185,129,0.08)); color:#6EE7B7; }
         .tab-btn.t-safari.active { background: linear-gradient(135deg,rgba(74,144,226,0.25),rgba(74,144,226,0.08)); color:#93C5FD; }
 
@@ -220,21 +219,17 @@
 
     <!-- Hero -->
     <div class="hero">
-        <div class="logo-ring">★</div>
+        <div class="logo-ring"><img src="assets/app-icon-512.png" alt="DYFI Wayanad Conference 2026"></div>
         <div class="badge">✓ Free · Official App</div>
         <h1>DYFI Wayanad<br><span>Conference 2026</span></h1>
-        <p class="subtitle">Choose how you want to install the official delegate app — Android APK, Chrome shortcut, or iPhone Safari.</p>
+        <p class="subtitle">Choose how you want to install the official delegate app — Android or iPhone Safari.</p>
     </div>
 
     <!-- Tab Bar -->
     <div class="tab-bar">
-        <button class="tab-btn t-apk active" onclick="switchTab('apk')" id="tab-apk">
-            <span class="tab-icon">📦</span>
-            APK (Android)
-        </button>
-        <button class="tab-btn t-chrome" onclick="switchTab('chrome')" id="tab-chrome">
-            <span class="tab-icon">🌐</span>
-            Chrome Install
+        <button class="tab-btn t-chrome active" onclick="switchTab('chrome')" id="tab-chrome">
+            <span class="tab-icon">🤖</span>
+            Android
         </button>
         <button class="tab-btn t-safari" onclick="switchTab('safari')" id="tab-safari">
             <span class="tab-icon">🧭</span>
@@ -242,78 +237,13 @@
         </button>
     </div>
 
-    <!-- ════════════ APK PANEL ════════════ -->
-    <div class="tab-panel active" id="panel-apk">
-
-        <div class="app-card">
-            <div class="app-icon ai-red">📱</div>
-            <div class="app-meta">
-                <h3>DYFI Wayanad 2026 APK</h3>
-                <p>Direct Android install · No Play Store needed</p>
-                <div class="chips">
-                    <span class="chip red">📦 v1.0 Release</span>
-                    <span class="chip">Android 7.0+</span>
-                    <span class="chip">~52 MB</span>
-                </div>
-            </div>
-        </div>
-
-        <a href="https://github.com/rajathashreef3-art/dyfiwayanad2026-app/releases/download/v1.0/app-release.apk"
-           class="btn-action btn-red" download="DYFIWayanad2026.apk" target="_blank" rel="noopener">
-            <span>⬇️</span>
-            <span>Download APK — Free</span>
-        </a>
-
-        <p class="steps-label">📋 How to install the APK</p>
-
-        <div class="steps-grid">
-            <div class="step-card">
-                <div class="step-num sn-red">1</div>
-                <div class="step-body">
-                    <h4>Tap "Download APK" above</h4>
-                    <p>The APK file (~52 MB) will start downloading to your Android phone. Wait for it to complete.</p>
-                    <div class="visual-bar"><div class="vicon">⬇️</div><span>Download bar appears at the top or bottom of Chrome</span></div>
-                </div>
-            </div>
-            <div class="step-card">
-                <div class="step-num sn-red">2</div>
-                <div class="step-body">
-                    <h4>Open the downloaded file</h4>
-                    <p>Tap the downloaded file in your <strong>notification bar</strong> or open your <strong>Files / Downloads</strong> app and tap <strong>DYFIWayanad2026.apk</strong>.</p>
-                    <div class="visual-bar"><div class="vicon">📂</div><span>Files app → Downloads → DYFIWayanad2026.apk</span></div>
-                </div>
-            </div>
-            <div class="step-card">
-                <div class="step-num sn-red">3</div>
-                <div class="step-body">
-                    <h4>Allow "Install from Unknown Sources"</h4>
-                    <p>Android will ask permission to install apps from outside the Play Store. Tap <strong>Settings</strong> → enable <strong>Allow from this source</strong> → go back and tap Install.</p>
-                    <div class="visual-bar"><div class="vicon">⚙️</div><span>Settings → Install Unknown Apps → Allow</span></div>
-                </div>
-            </div>
-            <div class="step-card">
-                <div class="step-num sn-red">4</div>
-                <div class="step-body">
-                    <h4>Tap Install → Open</h4>
-                    <p>Tap <strong>Install</strong> on the installer screen. Once done, tap <strong>Open</strong> to launch and register as a delegate!</p>
-                    <div class="visual-bar"><div class="vicon">✅</div><span>Install → Open → Register as Delegate</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="tip-box tip-red">
-            <span>⚠️</span>
-            <span>If Chrome warns "This file may be harmful" — tap <strong>Download anyway</strong>. This is a standard warning for all APK files downloaded outside the Play Store. The app is safe and official.</span>
-        </div>
-    </div>
-
     <!-- ════════════ CHROME PANEL ════════════ -->
-    <div class="tab-panel" id="panel-chrome">
+    <div class="tab-panel active" id="panel-chrome">
 
         <div class="app-card">
             <div class="app-icon ai-green">🌐</div>
             <div class="app-meta">
-                <h3>Install via Chrome (Android)</h3>
+                <h3>Install on Android</h3>
                 <p>Add to home screen · Works like a native app</p>
                 <div class="chips">
                     <span class="chip green">✓ No Download Needed</span>
@@ -458,7 +388,7 @@
 
 <script>
     function switchTab(tab) {
-        ['apk','chrome','safari'].forEach(t => {
+        ['chrome','safari'].forEach(t => {
             document.getElementById('tab-' + t).classList.remove('active');
             document.getElementById('panel-' + t).classList.remove('active');
         });
@@ -470,10 +400,8 @@
     window.addEventListener('DOMContentLoaded', () => {
         const ua = navigator.userAgent;
         const isIOS = /iphone|ipad|ipod/i.test(ua);
-        const isAndroid = /android/i.test(ua);
         if (isIOS) switchTab('safari');
-        else if (isAndroid) switchTab('chrome');
-        // Desktop stays on APK tab
+        // Android + desktop default to the Android tab
     });
 </script>
 </body>
