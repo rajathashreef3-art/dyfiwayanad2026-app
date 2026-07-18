@@ -665,6 +665,25 @@
             display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         .btn-print:active { transform: scale(0.98); }
+        .account-danger {
+            margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line);
+        }
+        .account-danger .danger-note {
+            font-size: 11.5px; color: var(--muted); text-align: center; margin-bottom: 12px; line-height: 1.5;
+        }
+        .btn-delete-account {
+            width: 100%; background: var(--red-tint); color: var(--primary);
+            border: 1.5px solid rgba(185,28,39,0.22); padding: 15px; border-radius: 16px;
+            font-size: 13.5px; font-weight: 800; cursor: pointer; font-family: inherit;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-delete-account:active { transform: scale(0.98); }
+        .btn-delete-account:disabled { opacity: .6; cursor: default; }
+        .btn-delete-account svg { width: 16px; height: 16px; stroke: var(--primary); }
+        .btn-delete-account .loader {
+            width: 16px; height: 16px; border: 2px solid rgba(185,28,39,.3);
+            border-top-color: var(--primary); border-radius: 50%; animation: spin .8s linear infinite;
+        }
 
         /* Section title */
         .page-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 18px; }
@@ -1438,6 +1457,14 @@
                 </div>
             </div>
             <button onclick="window.print()" class="btn-print">Print / Save Pass</button>
+
+            <div class="account-danger">
+                <p class="danger-note">Deleting your account permanently removes your registration and delegate pass from our records. This cannot be undone.</p>
+                <button type="button" class="btn-delete-account" id="deleteAccountBtn" onclick="deleteAccount()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    Delete My Account
+                </button>
+            </div>
         </section>
 
 
@@ -2193,6 +2220,36 @@
             document.getElementById('schedulePage').classList.remove('active');
             document.getElementById('noticesPage').classList.remove('active');
             document.getElementById('filesPage').classList.remove('active');
+        }
+
+        async function deleteAccount() {
+            const part = JSON.parse(localStorage.getItem('participant') || '{}');
+            const token = localStorage.getItem('token');
+            if (!part.id || !token) { showToast('Please sign in again.', true); logout(); return; }
+
+            // Two-step confirmation for an irreversible action
+            if (!confirm('Delete your account?\n\nThis permanently removes your registration and delegate pass from the database. This action cannot be undone.')) return;
+            const typed = prompt('This is permanent. Type DELETE to confirm removing your account:');
+            if (typed === null) return;
+            if (typed.trim().toUpperCase() !== 'DELETE') { showToast('Account deletion cancelled.', true); return; }
+
+            const btn = document.getElementById('deleteAccountBtn');
+            const orig = btn ? btn.innerHTML : '';
+            if (btn) { btn.disabled = true; btn.innerHTML = '<span class="loader"></span> Deleting…'; }
+            try {
+                const res = await fetch(`${API_BASE}/participant/${part.id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json().catch(() => ({}));
+                if (res.status === 401) { showToast('Session expired. Sign in again.', true); logout(); return; }
+                if (!res.ok) throw new Error(data.message || 'Could not delete account');
+                showToast(data.message || 'Your account has been deleted.');
+                logout();
+            } catch (err) {
+                if (btn) { btn.disabled = false; btn.innerHTML = orig; }
+                showToast(err.message, true);
+            }
         }
 
         // Load schedule items
