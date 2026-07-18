@@ -1525,12 +1525,7 @@
         <section id="filesPage" class="page">
             <h2 class="page-title">Resources</h2>
 
-            <h3 class="sub-title">Official Documents</h3>
-            <div id="documentsList">
-                <p class="notice-time">Loading documents...</p>
-            </div>
-
-            <h3 class="sub-title" style="margin-top: 24px;">Photo Gallery Albums</h3>
+            <h3 class="sub-title">Photo Gallery Albums</h3>
             <div id="albumsList">
                 <p class="notice-time">Loading photo albums...</p>
             </div>
@@ -2373,36 +2368,11 @@
             }
         }
 
-        // Load document downloads and gallery links
+        // Load gallery album links
         async function loadResources() {
-            const docList = document.getElementById('documentsList');
             const albumList = document.getElementById('albumsList');
 
-            // 1. Load documents
-            try {
-                const res = await fetch(`${API_BASE}/documents`);
-                const docs = await res.json();
-                if (!docs || docs.length === 0) {
-                    docList.innerHTML = `<p class="notice-time">No document files available.</p>`;
-                } else {
-                    docList.innerHTML = docs.map(d => `
-                        <div class="file-card">
-                            <div class="file-info">
-                                <div class="file-type">${d.fileType || 'PDF'}</div>
-                                <div class="file-desc">
-                                    <h3>${d.title}</h3>
-                                    <p>${d.description || 'Downloadable file'}</p>
-                                </div>
-                            </div>
-                            <button onclick="window.open('${d.fileUrl}')" class="btn-action"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='7 10 12 15 17 10'/><line x1='12' y1='15' x2='12' y2='3'/></svg></button>
-                        </div>
-                    `).join('');
-                }
-            } catch (e) {
-                docList.innerHTML = `<p class="notice-time">Failed to load documents.</p>`;
-            }
-
-            // 2. Load Gallery Drive albums
+            // Load Gallery Drive albums
             try {
                 const res = await fetch(`${API_BASE}/gallery`);
                 const albums = await res.json();
