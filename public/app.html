@@ -432,6 +432,7 @@
             display: flex; align-items: center; justify-content: center;
             min-height: calc(100vh - 120px);
             overflow: hidden;
+            touch-action: none;
         }
         .flipbook-page-display {
             width: 100%;
@@ -446,8 +447,21 @@
             box-shadow: 0 8px 40px rgba(0,0,0,0.6);
             display: block;
             transition: opacity 0.25s ease;
+            transform-origin: center center;
+            cursor: zoom-in;
+            -webkit-user-drag: none;
         }
         .flipbook-page-display img.flipping { opacity: 0; }
+        .fb-zoom-hint {
+            position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.55); color: rgba(255,255,255,0.9);
+            font-size: 11.5px; font-weight: 600; letter-spacing: 0.2px;
+            padding: 7px 14px; border-radius: 30px; z-index: 5;
+            display: flex; align-items: center; gap: 6px;
+            backdrop-filter: blur(4px); pointer-events: none;
+            animation: fbHintFade 3.2s ease forwards;
+        }
+        @keyframes fbHintFade { 0%,60% { opacity: 1; } 100% { opacity: 0; } }
         .flipbook-controls {
             display: flex; align-items: center; justify-content: space-between;
             gap: 16px;
@@ -1634,6 +1648,7 @@
                     <div class="flipbook-page-display" id="fbDisplay">
                         <img id="fbPageImg" src="${fbPages[fbCurrentPage]}" alt="Souvenir page ${fbCurrentPage + 1}">
                     </div>
+                    <div class="fb-zoom-hint">🔍 Pinch or double-tap to zoom</div>
                 </div>
                 <div class="flipbook-controls">
                     <button class="fb-nav-btn" id="fbPrev" onclick="changePage(-1)" ${fbCurrentPage === 0 ? 'disabled' : ''}>
@@ -1648,14 +1663,88 @@
                 <div class="flipbook-thumbnails" id="fbThumbs">${thumbs}</div>
             `;
 
-            // Touch swipe detection
-            let touchStartX = 0;
-            const stage = document.getElementById('fbStage');
-            stage.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+            // Pan / pinch-zoom / double-tap zoom / swipe
+            attachFlipGestures(document.getElementById('fbStage'), document.getElementById('fbPageImg'));
+        }
+
+        // Zoom + pan gestures for the current souvenir page.
+        // scale 1 → swipe turns pages; scale > 1 → drag pans, swipe disabled.
+        function attachFlipGestures(stage, img) {
+            if (!stage || !img) return;
+            const MAX = 4;
+            let scale = 1, tx = 0, ty = 0;
+            let startScale = 1, startDist = 0;
+            let startTx = 0, startTy = 0, panX = 0, panY = 0;
+            let swipeX = 0, mode = null, lastTap = 0;
+
+            const dist = (a, b) => Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+            function clampPan() {
+                const sr = stage.getBoundingClientRect();
+                const maxX = Math.max(0, (img.clientWidth * scale - sr.width) / 2);
+                const maxY = Math.max(0, (img.clientHeight * scale - sr.height) / 2);
+                tx = Math.max(-maxX, Math.min(maxX, tx));
+                ty = Math.max(-maxY, Math.min(maxY, ty));
+            }
+            function apply(anim) {
+                img.style.transition = anim ? 'transform 0.25s ease' : 'none';
+                img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+                img.style.cursor = scale > 1 ? 'zoom-out' : 'zoom-in';
+            }
+            function reset(anim) { scale = 1; tx = 0; ty = 0; apply(anim); }
+            function toggleZoom() { if (scale > 1) reset(true); else { scale = 2.5; apply(true); } }
+
+            stage.addEventListener('touchstart', e => {
+                if (e.touches.length === 2) {
+                    mode = 'pinch';
+                    startDist = dist(e.touches[0], e.touches[1]);
+                    startScale = scale;
+                } else if (e.touches.length === 1) {
+                    const now = Date.now();
+                    if (now - lastTap < 300) { toggleZoom(); mode = null; lastTap = 0; return; }
+                    lastTap = now;
+                    if (scale > 1) {
+                        mode = 'pan';
+                        panX = e.touches[0].clientX; panY = e.touches[0].clientY;
+                        startTx = tx; startTy = ty;
+                    } else {
+                        mode = 'swipe';
+                        swipeX = e.touches[0].clientX;
+                    }
+                }
+            }, { passive: true });
+
+            stage.addEventListener('touchmove', e => {
+                if (mode === 'pinch' && e.touches.length === 2) {
+                    e.preventDefault();
+                    const d = dist(e.touches[0], e.touches[1]);
+                    scale = Math.max(1, Math.min(MAX, startScale * d / (startDist || 1)));
+                    clampPan(); apply(false);
+                } else if (mode === 'pan' && e.touches.length === 1) {
+                    e.preventDefault();
+                    tx = startTx + (e.touches[0].clientX - panX);
+                    ty = startTy + (e.touches[0].clientY - panY);
+                    clampPan(); apply(false);
+                }
+            }, { passive: false });
+
             stage.addEventListener('touchend', e => {
-                const dx = e.changedTouches[0].screenX - touchStartX;
-                if (Math.abs(dx) > 50) changePage(dx < 0 ? 1 : -1);
+                if (mode === 'swipe' && scale === 1) {
+                    const dx = e.changedTouches[0].clientX - swipeX;
+                    if (Math.abs(dx) > 50) changePage(dx < 0 ? 1 : -1);
+                }
+                if (scale <= 1.02) reset(true); else { clampPan(); apply(true); }
+                mode = null;
             });
+
+            // Desktop: double-click toggle + Ctrl/trackpad wheel zoom
+            img.addEventListener('dblclick', e => { e.preventDefault(); toggleZoom(); });
+            stage.addEventListener('wheel', e => {
+                if (!e.ctrlKey) return;
+                e.preventDefault();
+                scale = Math.max(1, Math.min(MAX, scale - e.deltaY * 0.01));
+                if (scale === 1) { tx = 0; ty = 0; }
+                clampPan(); apply(false);
+            }, { passive: false });
         }
 
         function changePage(dir) {
