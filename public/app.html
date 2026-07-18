@@ -620,6 +620,7 @@
 
         .pass-qr-wrap { display: flex; justify-content: center; margin-bottom: 22px; }
         .pass-qr {
+            position: relative;
             width: 190px; height: 190px;
             background: #fff;
             border: 1px solid var(--line);
@@ -628,8 +629,18 @@
             box-shadow: var(--shadow-sm);
             display: flex; align-items: center; justify-content: center;
         }
-        .pass-qr img { width: 100%; height: 100%; object-fit: contain; }
+        .pass-qr #badgeQrImg { width: 100%; height: 100%; object-fit: contain; }
         .pass-qr .qr-fallback { font-size: 11px; color: var(--muted); text-align: center; }
+        /* Conference logo centered in the QR (kept small so the code stays scannable) */
+        .qr-logo-badge {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 22%; height: 22%;
+            background: #fff; border-radius: 7px;
+            padding: 3px; box-sizing: border-box;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        .qr-logo-badge img { width: 100%; height: 100%; object-fit: contain; }
 
         .pass-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .pass-cell {
@@ -1460,6 +1471,7 @@
                         <div class="pass-qr-wrap">
                             <div class="pass-qr">
                                 <img id="badgeQrImg" src="" alt="QR Pass">
+                                <div class="qr-logo-badge"><img src="assets/qr-logo.png" alt="DYFI Wayanad" width="60" height="60"></div>
                             </div>
                         </div>
 
