@@ -718,6 +718,40 @@
         .timeline-content p { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
         .timeline-meta { display: flex; gap: 10px; margin-top: 8px; font-size: 11.5px; color: var(--muted); }
 
+        /* Conference programme (day-grouped agenda) */
+        .prog-day {
+            background: var(--card); border: 1px solid var(--line);
+            border-radius: 22px; padding: 18px 18px 8px; box-shadow: var(--shadow-sm);
+        }
+        .prog-day-head {
+            display: flex; align-items: center; gap: 13px;
+            margin-bottom: 8px; padding-bottom: 15px; border-bottom: 1px solid var(--line);
+        }
+        .prog-day-badge {
+            flex-shrink: 0; background: var(--grad); color: #fff;
+            font-weight: 800; font-size: 10.5px; letter-spacing: 0.6px; line-height: 1.15;
+            padding: 9px 13px; border-radius: 13px; text-align: center;
+        }
+        .prog-day-badge b { font-size: 17px; display: block; letter-spacing: 0; }
+        .prog-day-date { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; }
+        .prog-day-sub { font-size: 12px; color: var(--muted); font-weight: 700; margin-top: 2px; }
+        .prog-list { display: flex; flex-direction: column; }
+        .prog-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; }
+        .prog-item + .prog-item { border-top: 1px dashed var(--line); }
+        .prog-dot {
+            flex-shrink: 0; width: 23px; height: 23px; border-radius: 50%;
+            background: var(--grad-soft); border: 1px solid rgba(100,16,32,0.16);
+            color: #641020; font-size: 10.5px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center; margin-top: 1px;
+        }
+        .prog-text { flex: 1; font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--ink); }
+        .prog-time {
+            display: inline-block; background: var(--red-tint); color: var(--primary);
+            font-size: 10.5px; font-weight: 800; letter-spacing: 0.3px;
+            padding: 3px 9px; border-radius: 20px; margin-left: 8px; white-space: nowrap;
+        }
+        .prog-note { font-size: 11.5px; color: var(--muted); font-weight: 600; text-align: center; margin-top: 14px; line-height: 1.5; }
+
         /* Notices */
         .notice-card {
             background: var(--card);
@@ -1471,6 +1505,7 @@
         <!-- PAGE 4: Schedule Timeline -->
         <section id="schedulePage" class="page">
             <h2 class="page-title">Event Timeline</h2>
+            <p class="sub-title" style="text-transform:none; letter-spacing:0; font-size:12.5px; margin-top:-10px; margin-bottom:16px;">ഡി.വൈ.എഫ്.ഐ. വയനാട് ജില്ലാ സമ്മേളനം · 2026 ജൂലൈ 17, 18, 19 · മാനന്തവാടി</p>
             <div class="timeline" id="timelineList">
                 <p class="notice-time">Loading timeline schedule...</p>
             </div>
@@ -2252,37 +2287,64 @@
             }
         }
 
-        // Load schedule items
-        async function loadSchedule() {
-            const list = document.getElementById('timelineList');
-            try {
-                const res = await fetch(`${API_BASE}/schedule`);
-                const data = await res.json();
-                
-                const agenda = data.schedule || data;
-                if (!agenda || agenda.length === 0) {
-                    list.innerHTML = `<p class="notice-time">No events listed in the schedule.</p>`;
-                    return;
-                }
+        // Official conference programme (from the DYFI Wayanad District Conference programme sheet)
+        const CONFERENCE_PROGRAMME = [
+            {
+                day: 1, date: '18.07.2026', weekday: 'ശനി',
+                items: [
+                    { time: '9:00 AM', text: 'രജിസ്ട്രേഷൻ' },
+                    { text: 'പതാക ഉയർത്തൽ' },
+                    { text: 'താൽക്കാലിക അധ്യക്ഷൻ' },
+                    { text: 'സ്വാഗതം' },
+                    { text: 'രക്തസാക്ഷി പ്രമേയം' },
+                    { text: 'അനുശോചന പ്രമേയം' },
+                    { text: 'വിവിധ സബ്കമ്മിറ്റി തെരഞ്ഞെടുപ്പ്' },
+                    { text: 'ഉദ്ഘാടനം' },
+                    { text: 'പ്രവർത്തന റിപ്പോർട്ട്' },
+                    { text: 'വരവ് ചെലവ് കണക്ക് അവതരണം' },
+                    { text: 'സംഘടനാ റിപ്പോർട്ട്' },
+                    { text: 'ഗ്രൂപ്പ് ചർച്ച' },
+                    { text: 'പൊതുചർച്ച' }
+                ]
+            },
+            {
+                day: 2, date: '19.07.2026', weekday: 'ഞായർ',
+                items: [
+                    { text: 'പൊതുചർച്ചയ്ക്കുള്ള മറുപടി' },
+                    { text: 'റിപ്പോർട്ട് അംഗീകരിക്കൽ' },
+                    { text: 'ജില്ലാ കമ്മിറ്റി തെരഞ്ഞെടുപ്പ്' },
+                    { text: 'സംസ്ഥാന സമ്മേളന പ്രതിനിധി തെരഞ്ഞെടുപ്പ്' },
+                    { text: 'അഭിവാദ്യങ്ങൾ' },
+                    { text: 'പ്രമേയങ്ങൾ' },
+                    { text: 'ക്രെഡൻഷ്യൽ റിപ്പോർട്ട് അവതരണം' },
+                    { text: 'ഭാവി പ്രവർത്തനരേഖ അവതരണം' },
+                    { text: 'നന്ദി' },
+                    { time: '4:00 PM', text: 'യുവജനറാലി, പൊതുസമ്മേളനം' }
+                ]
+            }
+        ];
 
-                list.innerHTML = agenda.map(item => `
-                    <div class="timeline-item">
-                        <div class="time-box">
-                            <div>Day ${item.day}</div>
-                            <div style="font-size: 9px; font-weight: normal; margin-top: 2px;">${item.time.split(' - ')[0]}</div>
-                        </div>
-                        <div class="timeline-content">
-                            <h3>${item.activity}</h3>
-                            <p>${item.speaker || 'Event Panel'}</p>
-                            <div class="timeline-meta">
-                                <span>${item.venue}</span>
+        // Render the conference programme grouped by day
+        function loadSchedule() {
+            const list = document.getElementById('timelineList');
+            list.innerHTML = CONFERENCE_PROGRAMME.map(day => {
+                const rows = day.items.map((it, i) => `
+                    <div class="prog-item">
+                        <div class="prog-dot">${i + 1}</div>
+                        <div class="prog-text">${it.text}${it.time ? `<span class="prog-time">${it.time}</span>` : ''}</div>
+                    </div>`).join('');
+                return `
+                    <div class="prog-day">
+                        <div class="prog-day-head">
+                            <div class="prog-day-badge">DAY<b>${day.day}</b></div>
+                            <div>
+                                <div class="prog-day-date">${day.date}</div>
+                                <div class="prog-day-sub">${day.weekday}</div>
                             </div>
                         </div>
-                    </div>
-                `).join('');
-            } catch (e) {
-                list.innerHTML = `<p class="notice-time">Failed to load schedule timeline.</p>`;
-            }
+                        <div class="prog-list">${rows}</div>
+                    </div>`;
+            }).join('') + `<p class="prog-note">പരിപാടികളുടെ സമയക്രമം സാഹചര്യങ്ങൾക്കനുസരിച്ച് മാറാവുന്നതാണ്</p>`;
         }
 
         // Load notice announcements
