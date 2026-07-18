@@ -422,11 +422,28 @@
         .flipbook-back-btn svg { width: 18px; height: 18px; stroke: #fff; }
         .flipbook-title {
             font-size: 15px; font-weight: 800; color: #fff; flex: 1;
+            min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
         .flipbook-counter {
             font-size: 12px; font-weight: 700;
             color: rgba(255,255,255,0.5);
         }
+        .flipbook-dl-btn {
+            width: 38px; height: 38px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: none; align-items: center; justify-content: center;
+            cursor: pointer; flex-shrink: 0; padding: 0;
+        }
+        .flipbook-dl-btn svg { width: 18px; height: 18px; stroke: #fff; }
+        .flipbook-dl-btn:disabled { opacity: 0.5; cursor: default; }
+        .flipbook-dl-btn .fb-dl-spin {
+            width: 16px; height: 16px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.25); border-top-color: #fff;
+            animation: fbDlSpin 0.7s linear infinite;
+        }
+        @keyframes fbDlSpin { to { transform: rotate(360deg); } }
         .flipbook-stage {
             position: relative;
             display: flex; align-items: center; justify-content: center;
@@ -1301,6 +1318,9 @@
                 </button>
                 <div class="flipbook-title" id="souvenirTitle">Conference Souvenir</div>
                 <div class="flipbook-counter" id="fbCounter"></div>
+                <button class="flipbook-dl-btn" id="souvenirDlBtn" onclick="downloadSouvenir()" aria-label="Download souvenir PDF" title="Download souvenir">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><path d="M5 21h14"/></svg>
+                </button>
             </div>
 
             <div id="fbContent">
@@ -1557,10 +1577,13 @@
         let fbPages = [];
         let fbCurrentPage = 0;
         let fbTitle = 'Conference Souvenir';
+        let fbPdfUrl = '';
 
         function closeSouvenir() {
             const tb = document.getElementById('tabBar');
             if (tb) tb.style.display = 'flex';
+            const dlBtn = document.getElementById('souvenirDlBtn');
+            if (dlBtn) dlBtn.style.display = 'none';
             switchPage('dash');
         }
 
@@ -1581,6 +1604,11 @@
                 fbTitle = data.title || 'Conference Souvenir';
                 document.getElementById('souvenirTitle').textContent = fbTitle;
 
+                // Show the download button only when a full-souvenir PDF is available
+                fbPdfUrl = data.pdfUrl || '';
+                const dlBtn = document.getElementById('souvenirDlBtn');
+                if (dlBtn) dlBtn.style.display = fbPdfUrl ? 'flex' : 'none';
+
                 if (data.type === 'document' && data.docUrl) {
                     // Convert Google Drive share links to embed links
                     renderDocViewer(data.docUrl);
@@ -1591,6 +1619,34 @@
                 }
             } catch (e) {
                 document.getElementById('fbContent').innerHTML = `<div class="flipbook-empty"><div class="big-icon">⚠️</div><p>Failed to load souvenir. Please try again.</p></div>`;
+            }
+        }
+
+        async function downloadSouvenir() {
+            if (!fbPdfUrl) { showToast('Download will be available soon.', true); return; }
+            const btn = document.getElementById('souvenirDlBtn');
+            const original = btn ? btn.innerHTML : '';
+            const fileName = 'DYFI_Wayanad_2026_Souvenir.pdf';
+            if (btn) { btn.disabled = true; btn.innerHTML = '<span class="fb-dl-spin"></span>'; }
+            try {
+                // Fetch as a blob so the file actually saves (CORS is enabled on the backend)
+                const res = await fetch(fbPdfUrl);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 4000);
+                showToast('⬇️ Souvenir downloaded.');
+            } catch (e) {
+                // Fallback: open in a new tab so the user can save it manually
+                window.open(fbPdfUrl, '_blank', 'noopener');
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerHTML = original; }
             }
         }
 
