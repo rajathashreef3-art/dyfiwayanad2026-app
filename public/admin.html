@@ -69,6 +69,30 @@
         .r-row .k { color: var(--muted); font-weight: 600; }
         .r-row .v { font-weight: 700; text-align: right; }
         .r-note { font-size: 12.5px; margin-top: 14px; font-weight: 600; }
+        .tabs { display: none; gap: 6px; background: #fff; border: 1px solid var(--line); border-radius: 16px;
+            padding: 5px; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+        .tabs button { flex: 1; padding: 11px 8px; border: none; border-radius: 12px; font-family: inherit;
+            font-size: 12.5px; font-weight: 800; cursor: pointer; background: transparent; color: var(--muted); transition: all .18s; }
+        .tabs button.active { background: var(--grad); color: #fff; box-shadow: 0 2px 8px rgba(45,6,14,0.20); }
+        .list-head { display: flex; align-items: center; justify-content: space-between; margin: 2px 2px 16px; }
+        .list-head h2 { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; }
+        .count-pill { font-size: 11.5px; font-weight: 800; color: var(--primary); background: var(--red-bg);
+            padding: 5px 11px; border-radius: 30px; }
+        .search { position: relative; margin-bottom: 14px; }
+        .search input { padding-left: 40px; }
+        .search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--muted); }
+        .d-list { display: grid; gap: 10px; }
+        .d-item { display: flex; align-items: center; gap: 12px; background: var(--soft); border: 1px solid var(--line);
+            border-radius: 16px; padding: 13px 14px; }
+        .d-item .d-info { flex: 1; min-width: 0; }
+        .d-item .d-name { font-size: 14.5px; font-weight: 800; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .d-item .d-meta { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .d-del { flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px; border: 1px solid rgba(185,28,39,0.22);
+            background: var(--red-bg); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+        .d-del svg { width: 18px; height: 18px; stroke: var(--red); }
+        .d-del:disabled { opacity: .5; cursor: default; }
+        .d-del .loader { width: 15px; height: 15px; border-width: 2px; border-color: rgba(185,28,39,.3); border-top-color: var(--red); }
+        .d-empty { text-align: center; color: var(--muted); font-size: 13px; font-weight: 600; padding: 30px 10px; }
         .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
             background: var(--ink); color: #fff; padding: 12px 22px; border-radius: 14px; font-size: 13px; font-weight: 700;
             opacity: 0; pointer-events: none; transition: all .3s; z-index: 100; }
@@ -107,6 +131,12 @@
             </form>
         </div>
 
+        <!-- Console tab switcher -->
+        <div class="tabs" id="consoleTabs">
+            <button id="tabScan" class="active" onclick="showTab('scan')">Scan Passes</button>
+            <button id="tabDelegates" onclick="showTab('delegates')">Delegates</button>
+        </div>
+
         <!-- Scanner -->
         <div class="card" id="scanCard" style="display:none;">
             <h2>Scan Delegate Pass</h2>
@@ -124,6 +154,21 @@
             </form>
 
             <div id="result"></div>
+        </div>
+
+        <!-- Delegates -->
+        <div class="card" id="delegatesCard" style="display:none;">
+            <div class="list-head">
+                <h2>Delegates</h2>
+                <span class="count-pill" id="delCount">—</span>
+            </div>
+            <div class="search">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="delSearch" placeholder="Search by name, phone or email" oninput="filterDelegates()">
+            </div>
+            <div class="d-list" id="delList">
+                <div class="d-empty">Loading delegates…</div>
+            </div>
         </div>
     </div>
 
@@ -170,9 +215,30 @@
 
         function enterConsole() {
             document.getElementById('loginCard').style.display = 'none';
-            document.getElementById('scanCard').style.display = 'block';
+            document.getElementById('consoleTabs').style.display = 'flex';
             document.getElementById('logoutBtn').style.display = 'block';
-            startScanner();
+            showTab('scan');
+        }
+
+        function showTab(name) {
+            const isScan = name === 'scan';
+            document.getElementById('scanCard').style.display = isScan ? 'block' : 'none';
+            document.getElementById('delegatesCard').style.display = isScan ? 'none' : 'block';
+            document.getElementById('tabScan').classList.toggle('active', isScan);
+            document.getElementById('tabDelegates').classList.toggle('active', !isScan);
+            if (isScan) {
+                if (!scanner) startScanner();
+            } else {
+                stopScanner();
+                loadDelegates();
+            }
+        }
+
+        function stopScanner() {
+            if (scanner) {
+                const s = scanner; scanner = null;
+                try { s.stop().catch(() => {}); } catch (_) {}
+            }
         }
 
         function adminLogout() {
@@ -275,6 +341,86 @@
         function row(k, v) {
             if (!v) return '';
             return '<div class="r-row"><span class="k">' + k + '</span><span class="v">' + esc(v) + '</span></div>';
+        }
+
+        // ── Delegates management ──
+        let allDelegates = [];
+
+        function fmtDelegateId(id) {
+            if (!id) return '—';
+            const six = String(id).replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(-6).padStart(6, '0');
+            return 'DYFI-26-' + six.slice(0, 3) + '-' + six.slice(3);
+        }
+
+        async function loadDelegates() {
+            const listEl = document.getElementById('delList');
+            listEl.innerHTML = '<div class="d-empty">Loading delegates…</div>';
+            try {
+                const res = await fetch(`${API_BASE}/admin/participants`, {
+                    headers: { 'Authorization': `Bearer ${token()}` }
+                });
+                if (res.status === 401) { showToast('Session expired. Sign in again.', true); adminLogout(); return; }
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Failed to load delegates');
+                allDelegates = Array.isArray(data) ? data : [];
+                filterDelegates();
+            } catch (err) {
+                listEl.innerHTML = '<div class="d-empty">' + esc(err.message) + '</div>';
+                document.getElementById('delCount').textContent = '—';
+            }
+        }
+
+        function filterDelegates() {
+            const q = document.getElementById('delSearch').value.trim().toLowerCase();
+            const listEl = document.getElementById('delList');
+            document.getElementById('delCount').textContent = allDelegates.length + (allDelegates.length === 1 ? ' delegate' : ' delegates');
+            const shown = q
+                ? allDelegates.filter(d =>
+                    (d.name || '').toLowerCase().includes(q) ||
+                    (d.phone || '').toLowerCase().includes(q) ||
+                    (d.email || '').toLowerCase().includes(q) ||
+                    fmtDelegateId(d.id).toLowerCase().includes(q))
+                : allDelegates;
+            if (!shown.length) {
+                listEl.innerHTML = '<div class="d-empty">' + (allDelegates.length ? 'No delegates match your search.' : 'No delegates registered yet.') + '</div>';
+                return;
+            }
+            listEl.innerHTML = shown.map(d => {
+                const meta = [fmtDelegateId(d.id), d.phone, d.email].filter(Boolean).join(' · ');
+                return '<div class="d-item" data-id="' + esc(d.id) + '">' +
+                    '<div class="d-info">' +
+                        '<div class="d-name">' + esc(d.name || 'Unnamed') + '</div>' +
+                        '<div class="d-meta">' + esc(meta) + '</div>' +
+                    '</div>' +
+                    '<button class="d-del" title="Delete delegate" onclick="deleteDelegate(this)" data-name="' + esc(d.name || 'this delegate') + '">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
+                    '</button>' +
+                '</div>';
+            }).join('');
+        }
+
+        async function deleteDelegate(btn) {
+            const item = btn.closest('.d-item');
+            const id = item.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            if (!confirm('Delete ' + name + '?\n\nThis permanently removes the delegate’s registration and pass. This cannot be undone.')) return;
+            const orig = btn.innerHTML;
+            btn.disabled = true; btn.innerHTML = '<span class="loader"></span>';
+            try {
+                const res = await fetch(`${API_BASE}/admin/participant/${encodeURIComponent(id)}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token()}` }
+                });
+                if (res.status === 401) { showToast('Session expired. Sign in again.', true); adminLogout(); return; }
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Delete failed');
+                allDelegates = allDelegates.filter(d => d.id !== id);
+                filterDelegates();
+                showToast(data.message || 'Delegate deleted');
+            } catch (err) {
+                btn.disabled = false; btn.innerHTML = orig;
+                showToast(err.message, true);
+            }
         }
         function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
 
